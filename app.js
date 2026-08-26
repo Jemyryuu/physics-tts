@@ -1,8 +1,10 @@
 // === STATE & KONFIGURASI ===
+let currentAppMode = "questions"; // "questions" | "answers"
 let currentFilter = "all";
+let currentAnswerFilter = "all";
+let answersSearchQuery = "";
 let currentQuestionIndex = null;
 let completedQuestions = new Set();
-let isAnswerVisible = false;
 
 const TRANSITION_DURATION = 5;
 const QUESTION_DURATION = 45;
@@ -174,7 +176,6 @@ const SOUND_SETTINGS_KEY = "physics_tts_sound_settings";
 
 function loadCompletedQuestions() {
   try {
-    // Hapus data lama agar tidak terjadi ketidaksinkronan dengan soal baru
     if (localStorage.getItem(LEGACY_STORAGE_KEY)) {
       localStorage.removeItem(LEGACY_STORAGE_KEY);
     }
@@ -226,18 +227,69 @@ function saveAudioSettings() {
   }
 }
 
-// === INISIALISASI & TAB FILTER ===
+// === INISIALISASI & NAVIGASI MODE ===
 document.addEventListener("DOMContentLoaded", () => {
   loadCompletedQuestions();
   loadAudioSettings();
-  initTabs();
+  initModeNav();
+  initQuestionTabs();
+  initAnswerTabs();
   renderGrid();
+  renderAnswersList();
   updateProgressStats();
   setupEventListeners();
 });
 
-function initTabs() {
+function initModeNav() {
+  const btnQuestions = document.getElementById("navBtnQuestions");
+  const btnAnswers = document.getElementById("navBtnAnswers");
+
+  if (btnQuestions) {
+    btnQuestions.addEventListener("click", () => switchAppMode("questions"));
+  }
+  if (btnAnswers) {
+    btnAnswers.addEventListener("click", () => switchAppMode("answers"));
+  }
+}
+
+function switchAppMode(mode) {
+  currentAppMode = mode;
+  const btnQuestions = document.getElementById("navBtnQuestions");
+  const btnAnswers = document.getElementById("navBtnAnswers");
+  const viewQuestions = document.getElementById("viewQuestions");
+  const viewAnswers = document.getElementById("viewAnswers");
+
+  if (mode === "questions") {
+    if (btnQuestions) btnQuestions.classList.add("active");
+    if (btnAnswers) btnAnswers.classList.remove("active");
+    if (viewQuestions) {
+      viewQuestions.style.display = "block";
+      viewQuestions.classList.add("active");
+    }
+    if (viewAnswers) {
+      viewAnswers.style.display = "none";
+      viewAnswers.classList.remove("active");
+    }
+    renderGrid();
+  } else {
+    if (btnQuestions) btnQuestions.classList.remove("active");
+    if (btnAnswers) btnAnswers.classList.add("active");
+    if (viewQuestions) {
+      viewQuestions.style.display = "none";
+      viewQuestions.classList.remove("active");
+    }
+    if (viewAnswers) {
+      viewAnswers.style.display = "block";
+      viewAnswers.classList.add("active");
+    }
+    renderAnswersList();
+  }
+}
+
+// === TAB FILTER SOAL ===
+function initQuestionTabs() {
   const tabsContainer = document.getElementById("filterTabs");
+  if (!tabsContainer) return;
   tabsContainer.innerHTML = "";
 
   ROUNDS_CONFIG.forEach(round => {
@@ -246,7 +298,7 @@ function initTabs() {
     btn.textContent = `${round.label} (${round.range})`;
     btn.dataset.roundId = round.id;
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("#filterTabs .tab-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       currentFilter = round.id;
       renderGrid();
@@ -255,9 +307,39 @@ function initTabs() {
   });
 }
 
+// === TAB FILTER KUNCI JAWABAN ===
+function initAnswerTabs() {
+  const tabsContainer = document.getElementById("answersFilterTabs");
+  if (!tabsContainer) return;
+  tabsContainer.innerHTML = "";
+
+  ROUNDS_CONFIG.forEach(round => {
+    const btn = document.createElement("button");
+    btn.className = `tab-btn ${currentAnswerFilter === round.id ? "active" : ""}`;
+    btn.textContent = `${round.label} (${round.range})`;
+    btn.dataset.roundId = round.id;
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#answersFilterTabs .tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentAnswerFilter = round.id;
+      renderAnswersList();
+    });
+    tabsContainer.appendChild(btn);
+  });
+
+  const searchInput = document.getElementById("answersSearchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      answersSearchQuery = e.target.value.trim().toLowerCase();
+      renderAnswersList();
+    });
+  }
+}
+
 // === GRID SOAL ===
 function renderGrid() {
   const container = document.getElementById("questionsContainer");
+  if (!container) return;
   container.innerHTML = "";
 
   let roundsToDisplay = [];
@@ -331,6 +413,93 @@ function renderGrid() {
   });
 }
 
+// === DAFTAR KUNCI JAWABAN ===
+function renderAnswersList() {
+  const container = document.getElementById("answersContainer");
+  if (!container) return;
+  container.innerHTML = "";
+
+  let roundsToDisplay = [];
+  if (currentAnswerFilter === "all") {
+    roundsToDisplay = [
+      { id: 1, name: "Ronde 1 (1 - 12)" },
+      { id: 2, name: "Ronde 2 (1 - 12)" },
+      { id: 3, name: "Ronde 3 (1 - 12)" },
+      { id: 4, name: "Soal Cadangan (1 - 14)" }
+    ];
+  } else {
+    const rId = parseInt(currentAnswerFilter, 10);
+    const roundObj = ROUNDS_CONFIG.find(r => r.id === currentAnswerFilter);
+    roundsToDisplay = [{
+      id: rId,
+      name: `${roundObj.label} (${roundObj.range})`
+    }];
+  }
+
+  let totalRendered = 0;
+
+  roundsToDisplay.forEach(round => {
+    let questionsInRound = QUESTIONS_DATA.filter(q => q.round === round.id);
+
+    if (answersSearchQuery) {
+      questionsInRound = questionsInRound.filter(q => 
+        q.answer.toLowerCase().includes(answersSearchQuery) ||
+        q.text.toLowerCase().includes(answersSearchQuery) ||
+        String(q.number).includes(answersSearchQuery)
+      );
+    }
+
+    if (questionsInRound.length === 0) return;
+
+    totalRendered += questionsInRound.length;
+
+    const roundSection = document.createElement("div");
+    roundSection.className = "answer-round-section";
+
+    roundSection.innerHTML = `
+      <div class="round-heading">
+        <h2 class="round-title">${round.name}</h2>
+        <span class="round-subtitle">${questionsInRound.length} Kunci Jawaban</span>
+      </div>
+      <div class="answers-list-grid" id="answer-grid-${round.id}"></div>
+    `;
+
+    container.appendChild(roundSection);
+
+    const grid = roundSection.querySelector(`#answer-grid-${round.id}`);
+    questionsInRound.forEach(q => {
+      const isMendatar = q.type === "mendatar";
+      const card = document.createElement("div");
+      card.className = `answer-card type-${q.type}`;
+
+      card.innerHTML = `
+        <div class="answer-card-header">
+          <span class="answer-card-number">Nomor ${q.number}</span>
+          <span class="card-badge badge-${q.type}">
+            ${isMendatar ? SVG_ICONS.mendatar : SVG_ICONS.menurun}
+            <span>${isMendatar ? 'Mendatar' : 'Menurun'}</span>
+          </span>
+        </div>
+        <div class="answer-card-clue">${q.text}</div>
+        <div class="answer-card-solution">
+          <span class="solution-label">Kunci Jawaban</span>
+          <span class="solution-value">${q.answer}</span>
+        </div>
+      `;
+
+      grid.appendChild(card);
+    });
+  });
+
+  if (totalRendered === 0) {
+    container.innerHTML = `
+      <div class="empty-answers-msg">
+        <p>Tidak ada kunci jawaban yang cocok dengan pencarian "<strong>${answersSearchQuery}</strong>".</p>
+      </div>
+    `;
+  }
+}
+
 function updateProgressStats() {
   const statsLabel = document.getElementById("progressStats");
   if (statsLabel) {
@@ -338,7 +507,7 @@ function updateProgressStats() {
   }
 }
 
-// === MODAL SOAL & KUNCI JAWABAN ===
+// === MODAL SOAL (MURNI TANPA KUNCI JAWABAN) ===
 function openQuestionModal(target) {
   let index = -1;
   if (typeof target === "number") {
@@ -365,14 +534,6 @@ function openQuestionModal(target) {
     <span>${q.type === "mendatar" ? "MENDATAR" : "MENURUN"}</span>
   `;
 
-  // Set teks jawaban & sembunyikan secara default
-  const answerVal = document.getElementById("answerTextValue");
-  if (answerVal) {
-    answerVal.textContent = q.answer || "-";
-  }
-  isAnswerVisible = false;
-  updateAnswerUI();
-
   updateModalCompletedBtn();
   updateModalNavButtons();
 
@@ -380,28 +541,6 @@ function openQuestionModal(target) {
   backdrop.classList.add("active");
 
   startTransitionTimer();
-}
-
-function toggleAnswerVisibility() {
-  isAnswerVisible = !isAnswerVisible;
-  updateAnswerUI();
-}
-
-function updateAnswerUI() {
-  const answerBox = document.getElementById("answerBoxView");
-  const btnText = document.getElementById("btnToggleAnswerText");
-  const btn = document.getElementById("btnToggleAnswer");
-  if (!answerBox) return;
-
-  if (isAnswerVisible) {
-    answerBox.classList.add("active");
-    if (btnText) btnText.textContent = "Sembunyikan";
-    if (btn) btn.classList.add("btn-primary");
-  } else {
-    answerBox.classList.remove("active");
-    if (btnText) btnText.textContent = "Kunci Jawaban";
-    if (btn) btn.classList.remove("btn-primary");
-  }
 }
 
 function markQuestionCompleted(questionId) {
@@ -662,7 +801,7 @@ function showRoundCompleteScreen(roundNumber) {
       closeRoundCompleteModal();
       if (currentFilter === String(roundNumber)) {
         currentFilter = String(nextRoundNumber);
-        const tabs = document.querySelectorAll(".tab-btn");
+        const tabs = document.querySelectorAll("#filterTabs .tab-btn");
         tabs.forEach(tab => {
           if (tab.dataset.roundId === String(nextRoundNumber)) {
             tab.classList.add("active");
@@ -739,11 +878,6 @@ function setupEventListeners() {
     btnSkipQ.addEventListener("click", skipQuestionTimer);
   }
 
-  const btnToggleAns = document.getElementById("btnToggleAnswer");
-  if (btnToggleAns) {
-    btnToggleAns.addEventListener("click", toggleAnswerVisibility);
-  }
-
   document.getElementById("btnPrevQuestion").addEventListener("click", () => {
     if (currentQuestionIndex > 0) {
       openQuestionModal(QUESTIONS_DATA[currentQuestionIndex - 1].id);
@@ -763,10 +897,10 @@ function setupEventListeners() {
     const q = QUESTIONS_DATA[currentQuestionIndex];
     if (completedQuestions.has(q.id)) {
       completedQuestions.delete(q.id);
-      showToast(`Soal no. ${q.number} (${q.roundName}) ditandai belum selesai`);
+      showToast(`Soal Nomor ${q.number} (${q.roundName}) ditandai belum selesai`);
     } else {
       completedQuestions.add(q.id);
-      showToast(`Soal no. ${q.number} (${q.roundName}) ditandai selesai`);
+      showToast(`Soal Nomor ${q.number} (${q.roundName}) ditandai selesai`);
     }
     saveCompletedQuestions();
     updateModalCompletedBtn();
@@ -831,8 +965,6 @@ function handleKeydown(e) {
       skipTransition();
     } else if (e.key === "t" || e.key === "T" || e.key === "k" || e.key === "K") {
       skipQuestionTimer();
-    } else if (e.key === "j" || e.key === "J") {
-      toggleAnswerVisibility();
     } else if (e.key === "ArrowLeft") {
       if (currentQuestionIndex > 0) {
         openQuestionModal(QUESTIONS_DATA[currentQuestionIndex - 1].id);

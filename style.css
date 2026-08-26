@@ -220,6 +220,44 @@ body {
   font-weight: 600;
 }
 
+/* Navigasi Mode Utama (Soal / Kunci Jawaban) */
+.main-mode-nav {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  padding: 0.2rem;
+  border-radius: var(--radius-full);
+  gap: 0.2rem;
+}
+
+.mode-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  touch-action: manipulation;
+}
+
+.mode-nav-btn:hover {
+  color: var(--text-primary);
+}
+
+.mode-nav-btn.active {
+  background: #ffffff;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-xs);
+}
+
 .header-controls {
   display: flex;
   align-items: center;
@@ -561,6 +599,160 @@ body {
 }
 
 /* ==========================================================================
+   VIEW KUNCI JAWABAN
+   ========================================================================== */
+.app-view {
+  display: none;
+}
+
+.app-view.active {
+  display: block;
+  animation: fadeInView 0.2s ease;
+}
+
+@keyframes fadeInView {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.answers-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.15rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.answers-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.answers-search-input {
+  font-family: inherit;
+  font-size: 0.825rem;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  outline: none;
+  min-width: 240px;
+  transition: all 0.15s ease;
+  box-shadow: var(--shadow-xs);
+}
+
+.answers-search-input:focus {
+  border-color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.answers-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.answers-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.answer-round-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.answers-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 0.85rem;
+}
+
+.answer-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-xs);
+  transition: all 0.15s ease;
+}
+
+.answer-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.answer-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.answer-card-number {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.answer-card-clue {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  flex: 1;
+}
+
+.answer-card-solution {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: var(--bg-subtle);
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.solution-label {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.solution-value {
+  font-size: 1.025rem;
+  font-weight: 800;
+  color: var(--accent-mendatar);
+  letter-spacing: 0.04em;
+  text-align: right;
+  word-break: break-word;
+}
+
+.type-menurun .solution-value {
+  color: var(--accent-menurun);
+}
+
+.empty-answers-msg {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ==========================================================================
    MODAL DISPLAY SOAL
    ========================================================================== */
 .modal-backdrop {
@@ -751,46 +943,6 @@ body {
 .clue-text-view.active {
   display: block;
   animation: revealQuestion 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.answer-box-view {
-  display: none;
-  margin-top: 1.25rem;
-  width: 100%;
-}
-
-.answer-box-view.active {
-  display: flex;
-  justify-content: center;
-  animation: revealQuestion 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.answer-box-inner {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-strong);
-  padding: 0.45rem 1.1rem;
-  border-radius: var(--radius-full);
-  box-shadow: var(--shadow-xs);
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.answer-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.answer-text {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--accent-mendatar);
-  letter-spacing: 0.04em;
 }
 
 @keyframes revealQuestion {

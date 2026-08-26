@@ -23,6 +23,17 @@
         </div>
       </div>
 
+      <nav class="main-mode-nav" aria-label="Navigasi Mode">
+        <button id="navBtnQuestions" class="mode-nav-btn active" title="Buka Mode Pemilihan Soal">
+          <svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Pemilihan Soal</span>
+        </button>
+        <button id="navBtnAnswers" class="mode-nav-btn" title="Buka Tab Kunci Jawaban">
+          <svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"></circle><path d="m21 2-9.6 9.6"></path><path d="m15.5 7.5 3 3L22 7l-3-3"></path></svg>
+          <span>Kunci Jawaban</span>
+        </button>
+      </nav>
+
       <div class="header-controls">
         <span id="progressStats" class="progress-capsule">0 / 50 Selesai</span>
         <div class="volume-control-wrapper" title="Pengaturan Volume Efek Suara">
@@ -49,30 +60,45 @@
   <!-- MAIN CONTENT -->
   <main class="main-content">
     
-    <section class="info-bar">
-      <div class="filter-tabs" id="filterTabs"></div>
+    <!-- VIEW: PEMILIHAN SOAL -->
+    <div id="viewQuestions" class="app-view active">
+      <section class="info-bar">
+        <div class="filter-tabs" id="filterTabs"></div>
 
-      <div class="stats-legend">
-        <div class="legend-item">
-          <span class="indicator-dot dot-mendatar"></span>
-          <span>Mendatar</span>
+        <div class="stats-legend">
+          <div class="legend-item">
+            <span class="indicator-dot dot-mendatar"></span>
+            <span>Mendatar</span>
+          </div>
+          <div class="legend-item">
+            <span class="indicator-dot dot-menurun"></span>
+            <span>Menurun</span>
+          </div>
+          <div class="legend-item">
+            <span class="indicator-dot dot-selesai"></span>
+            <span>Selesai</span>
+          </div>
         </div>
-        <div class="legend-item">
-          <span class="indicator-dot dot-menurun"></span>
-          <span>Menurun</span>
-        </div>
-        <div class="legend-item">
-          <span class="indicator-dot dot-selesai"></span>
-          <span>Selesai</span>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="questionsContainer"></section>
+      <section id="questionsContainer"></section>
+    </div>
+
+    <!-- VIEW: KUNCI JAWABAN -->
+    <div id="viewAnswers" class="app-view" style="display: none;">
+      <section class="answers-info-bar">
+        <div class="filter-tabs" id="answersFilterTabs"></div>
+        <div class="answers-search-wrap">
+          <input type="text" id="answersSearchInput" class="answers-search-input" placeholder="Cari soal atau jawaban..." />
+        </div>
+      </section>
+
+      <section id="answersContainer" class="answers-list-container"></section>
+    </div>
 
   </main>
 
-  <!-- MODAL DISPLAY SOAL -->
+  <!-- MODAL DISPLAY SOAL (MURNI TANPA KUNCI JAWABAN) -->
   <div class="modal-backdrop" id="questionModalBackdrop" role="dialog" aria-modal="true">
     <div class="question-modal" id="questionModal">
       
@@ -104,13 +130,6 @@
 
           <div class="clue-text-view" id="clueTextView">
             Gaya tarik-menarik antarmolekul sejenis.
-          </div>
-
-          <div class="answer-box-view" id="answerBoxView">
-            <div class="answer-box-inner">
-              <span class="answer-label">Kunci Jawaban:</span>
-              <span class="answer-text" id="answerTextValue">KOHESI</span>
-            </div>
           </div>
         </div>
       </div>
@@ -160,10 +179,6 @@
           </div>
 
           <div class="status-buttons-group">
-            <button id="btnToggleAnswer" class="btn btn-sm" title="Tampilkan / Sembunyikan Kunci Jawaban (J)">
-              <svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-              <span id="btnToggleAnswerText">Kunci Jawaban</span>
-            </button>
             <button id="btnToggleCompleted" class="btn btn-sm">
               <svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
               <span>Tandai Selesai</span>

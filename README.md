@@ -1,6 +1,6 @@
 # Physics TTS - Pemilihan Soal Teka-Teki Silang Fisika
 
-Website interaktif dan minimalis untuk pemilihan soal kuis Teka-Teki Silang (TTS) Fisika. Terdiri dari 50 soal yang dibagi ke dalam 3 ronde utama dan 1 ronde soal cadangan, dilengkapi dengan timer 45 detik, transisi 5 detik, fitur buka/tutup kunci jawaban, serta pembeda visual antara soal mendatar dan menurun.
+Website interaktif dan minimalis untuk pemilihan soal kuis Teka-Teki Silang (TTS) Fisika. Terdiri dari 50 soal yang dibagi ke dalam 3 ronde utama dan 1 ronde soal cadangan, dilengkapi dengan timer 45 detik, transisi 5 detik, tab terpisah untuk kunci jawaban, serta pembeda visual antara soal mendatar dan menurun.
 
 ## 🚀 Fitur Utama
 
@@ -9,7 +9,14 @@ Website interaktif dan minimalis untuk pemilihan soal kuis Teka-Teki Silang (TTS
   - **Ronde 2 (1 - 12):** 5 Mendatar & 7 Menurun
   - **Ronde 3 (1 - 12):** 6 Mendatar & 6 Menurun
   - **Soal Cadangan (1 - 14):** 7 Mendatar & 7 Menurun
-- **Kunci Jawaban Terintegrasi (Answer Reveal):** Tombol dan pintasan keyboard untuk melihat kunci jawaban pada modal kuis tanpa membocorkannya secara otomatis ke peserta.
+- **Tab Khusus Kunci Jawaban:** Halaman terpisah untuk melihat kunci jawaban secara lengkap, dengan opsi filter:
+  - `Semua Kunci Jawaban` (50 Soal)
+  - `Ronde 1 (1 - 12)`
+  - `Ronde 2 (1 - 12)`
+  - `Ronde 3 (1 - 12)`
+  - `Soal Cadangan (1 - 14)`
+  - Dilengkapi fitur pencarian instan (search bar).
+- **Modal Soal Bersih:** Layar kuis dan proyektor murni menampilkan soal dan timer tanpa membocorkan kunci jawaban kepada peserta.
 - **Desain Minimalis Putih:** Latar belakang putih bersih (`#ffffff`) dengan teks kontras tinggi, ideal untuk proyektor dan layar besar.
 - **Pembeda Visual Jelas:**
   - ➡️ **Mendatar (Biru)**
@@ -26,7 +33,6 @@ Website interaktif dan minimalis untuk pemilihan soal kuis Teka-Teki Silang (TTS
   - `R` : Ulangi Timer
   - `S` : Lewati Transisi 5 Detik
   - `T` / `K` : Lewati Timer Soal 45 Detik
-  - `J` : Tampilkan / Sembunyikan Kunci Jawaban
   - `M` : Mute / Unmute Suara
   - `←` / `→` : Navigasi Soal Sebelumnya / Selanjutnya
   - `Esc` : Kembali ke Daftar Soal
@@ -34,10 +40,10 @@ Website interaktif dan minimalis untuk pemilihan soal kuis Teka-Teki Silang (TTS
 ## 📂 Struktur File
 
 ```text
-├── index.html       # Halaman utama aplikasi
-├── style.css        # Styling tema minimalis putih & responsif
+├── index.html       # Halaman utama aplikasi (navigasi mode Soal & Kunci Jawaban)
+├── style.css        # Styling tema minimalis putih, responsif & bersih
 ├── questions.js     # Database 50 soal TTS Fisika beserta kunci jawaban & konfigurasi ronde
-├── app.js           # Logika interaktif, timer, audio synth, answer toggle, dan event handling
+├── app.js           # Logika interaktif, timer, audio synth, tab kunci jawaban, dan event handling
 └── README.md        # Dokumentasi proyek
 ```
 
