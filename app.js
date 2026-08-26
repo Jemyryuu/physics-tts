@@ -3,6 +3,7 @@ let currentAppMode = "questions"; // "questions" | "answers"
 let currentFilter = "all";
 let currentAnswerFilter = "all";
 let answersSearchQuery = "";
+let showAnswerQuestions = false; // Default: false (hanya menampilkan kunci jawaban)
 let currentQuestionIndex = null;
 let completedQuestions = new Set();
 
@@ -173,6 +174,7 @@ function playTimesUpBuzzer() {
 const STORAGE_KEY = "physics_tts_completed_v2";
 const LEGACY_STORAGE_KEY = "physics_tts_completed_q";
 const SOUND_SETTINGS_KEY = "physics_tts_sound_settings";
+const SHOW_ANSWER_QUESTIONS_KEY = "physics_tts_show_answer_questions";
 
 function loadCompletedQuestions() {
   try {
@@ -199,6 +201,31 @@ function saveCompletedQuestions() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...completedQuestions]));
   } catch (e) {
     console.error(e);
+  }
+}
+
+function loadShowAnswerQuestionsSetting() {
+  try {
+    const saved = localStorage.getItem(SHOW_ANSWER_QUESTIONS_KEY);
+    if (saved !== null) {
+      showAnswerQuestions = JSON.parse(saved) === true;
+    } else {
+      showAnswerQuestions = false; // Default: hanya menampilkan kunci jawaban
+    }
+  } catch (e) {
+    showAnswerQuestions = false;
+  }
+  const toggleCheckbox = document.getElementById("toggleShowAnswerQuestions");
+  if (toggleCheckbox) {
+    toggleCheckbox.checked = showAnswerQuestions;
+  }
+}
+
+function saveShowAnswerQuestionsSetting() {
+  try {
+    localStorage.setItem(SHOW_ANSWER_QUESTIONS_KEY, JSON.stringify(showAnswerQuestions));
+  } catch (e) {
+    console.warn("Error saving show answer questions setting", e);
   }
 }
 
@@ -231,6 +258,7 @@ function saveAudioSettings() {
 document.addEventListener("DOMContentLoaded", () => {
   loadCompletedQuestions();
   loadAudioSettings();
+  loadShowAnswerQuestionsSetting();
   initModeNav();
   initQuestionTabs();
   initAnswerTabs();
@@ -413,6 +441,17 @@ function initAnswerTabs() {
       renderAnswersList();
     });
   }
+
+  const toggleQuestionsCheckbox = document.getElementById("toggleShowAnswerQuestions");
+  if (toggleQuestionsCheckbox) {
+    toggleQuestionsCheckbox.checked = showAnswerQuestions;
+    toggleQuestionsCheckbox.addEventListener("change", (e) => {
+      showAnswerQuestions = e.target.checked;
+      saveShowAnswerQuestionsSetting();
+      renderAnswersList();
+      showToast(showAnswerQuestions ? "Soal ditampilkan pada kunci jawaban" : "Hanya menampilkan kunci jawaban");
+    });
+  }
 }
 
 // === GRID SOAL ===
@@ -540,7 +579,7 @@ function renderAnswersList() {
         <h2 class="round-title">${round.name}</h2>
         <span class="round-subtitle">${questionsInRound.length} Kunci Jawaban</span>
       </div>
-      <div class="answers-list-grid" id="answer-grid-${round.id}"></div>
+      <div class="answers-list-grid ${showAnswerQuestions ? '' : 'is-compact'}" id="answer-grid-${round.id}"></div>
     `;
 
     container.appendChild(roundSection);
@@ -549,7 +588,7 @@ function renderAnswersList() {
     questionsInRound.forEach(q => {
       const isMendatar = q.type === "mendatar";
       const card = document.createElement("div");
-      card.className = `answer-card type-${q.type}`;
+      card.className = `answer-card type-${q.type} ${showAnswerQuestions ? '' : 'is-compact'}`;
 
       card.innerHTML = `
         <div class="answer-card-header">
@@ -559,7 +598,7 @@ function renderAnswersList() {
             <span>${isMendatar ? 'Mendatar' : 'Menurun'}</span>
           </span>
         </div>
-        <div class="answer-card-clue">${q.text}</div>
+        ${showAnswerQuestions ? `<div class="answer-card-clue">${q.text}</div>` : ''}
         <div class="answer-card-solution">
           <span class="solution-label">Kunci Jawaban</span>
           <span class="solution-value">${q.answer}</span>

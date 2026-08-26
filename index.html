@@ -88,8 +88,19 @@
     <div id="viewAnswers" class="app-view" style="display: none;">
       <section class="answers-info-bar">
         <div class="filter-tabs" id="answersFilterTabs"></div>
-        <div class="answers-search-wrap">
-          <input type="text" id="answersSearchInput" class="answers-search-input" placeholder="Cari soal atau jawaban..." />
+        <div class="answers-actions-wrap">
+          <div class="answers-toggle-wrap">
+            <label class="toggle-switch-label" for="toggleShowAnswerQuestions" title="Tampilkan atau sembunyikan soal pada kunci jawaban">
+              <span class="toggle-switch-text">Tampilkan Soal</span>
+              <span class="toggle-switch-container">
+                <input type="checkbox" id="toggleShowAnswerQuestions" class="toggle-switch-input" />
+                <span class="toggle-switch-slider"></span>
+              </span>
+            </label>
+          </div>
+          <div class="answers-search-wrap">
+            <input type="text" id="answersSearchInput" class="answers-search-input" placeholder="Cari soal atau jawaban..." />
+          </div>
         </div>
       </section>
 
