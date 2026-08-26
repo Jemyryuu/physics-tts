@@ -5,14 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pemilihan Soal TTS Fisika (50 Soal)</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Top Header Navigation -->
+  <!-- HEADER -->
   <header class="header">
     <div class="header-container">
       <div class="brand">
@@ -29,14 +28,11 @@
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- MAIN CONTENT -->
   <main class="main-content">
     
-    <!-- Filter Bar & Legend -->
     <section class="info-bar">
-      <div class="filter-tabs" id="filterTabs">
-        <!-- Generated via app.js -->
-      </div>
+      <div class="filter-tabs" id="filterTabs"></div>
 
       <div class="stats-legend">
         <div class="legend-item">
@@ -54,18 +50,14 @@
       </div>
     </section>
 
-    <!-- Grid Container for Question Cards -->
-    <section id="questionsContainer">
-      <!-- Generated via app.js -->
-    </section>
+    <section id="questionsContainer"></section>
 
   </main>
 
-  <!-- Single Question Display / Focus Screen (Modal) -->
+  <!-- MODAL DISPLAY SOAL -->
   <div class="modal-backdrop" id="questionModalBackdrop" role="dialog" aria-modal="true">
     <div class="question-modal" id="questionModal">
       
-      <!-- Modal Header -->
       <div class="modal-header">
         <div class="modal-header-meta">
           <span class="modal-round-tag" id="modalRoundTag">Ronde 1 (1–12)</span>
@@ -75,15 +67,12 @@
         <button class="modal-close-btn" id="modalCloseBtn" title="Tutup (Esc)">✕</button>
       </div>
 
-      <!-- Modal Body -->
       <div class="modal-body">
         
-        <!-- 5s Transition Notification Banner -->
         <div class="transition-banner" id="transitionBanner">
           Bersiap! Soal dimulai dalam 5 detik...
         </div>
 
-        <!-- Clue / Question Box -->
         <div class="clue-box mendatar-accent" id="modalClueBox">
           <div class="clue-label">PETUNJUK / PERTANYAAN</div>
           <div class="clue-text" id="modalClueText">
@@ -91,7 +80,6 @@
           </div>
         </div>
 
-        <!-- Timer Display (45s) -->
         <div class="timer-section">
           <div class="timer-display-container" id="timerDisplayContainer">
             <div class="timer-state-label" id="timerStateLabel">Waktu Menjawab</div>
@@ -100,20 +88,17 @@
               <span class="timer-unit">detik</span>
             </div>
             
-            <!-- Progress Bar -->
             <div class="timer-progress-track">
               <div class="timer-progress-fill" id="timerProgressFill"></div>
             </div>
           </div>
 
-          <!-- Timer Controls -->
           <div class="timer-controls">
             <button id="btnPauseResume" class="btn btn-primary">⏸ Jeda</button>
             <button id="btnResetTimer" class="btn">🔄 Ulangi Timer</button>
             <button id="btnSkipTransition" class="btn">⏭ Lewati Transisi</button>
           </div>
 
-          <!-- Keyboard helper hint -->
           <div class="shortcuts-hint">
             Pintasan: <kbd class="kbd">Spasi</kbd> Jeda/Lanjut &bull; <kbd class="kbd">R</kbd> Ulangi &bull; <kbd class="kbd">S</kbd> Lewati Transisi &bull; <kbd class="kbd">←/→</kbd> Pindah Soal &bull; <kbd class="kbd">Esc</kbd> Kembali
           </div>
@@ -121,7 +106,6 @@
 
       </div>
 
-      <!-- Modal Footer -->
       <div class="modal-footer">
         <div class="nav-buttons-group">
           <button id="btnPrevQuestion" class="btn">⬅ Sebelumnya</button>
@@ -137,15 +121,15 @@
     </div>
   </div>
 
-  <!-- Toast Notification -->
+  <!-- NOTIFIKASI TOAST -->
   <div id="toast" class="toast"></div>
 
-  <!-- Footer -->
+  <!-- FOOTER -->
   <footer class="footer">
     TTS Fisika &bull; 50 Soal Fluida & Mekanika &bull; 3 Ronde + Sisa Nomor
   </footer>
 
-  <!-- Scripts -->
+  <!-- SCRIPTS -->
   <script src="questions.js"></script>
   <script src="app.js"></script>
 </body>

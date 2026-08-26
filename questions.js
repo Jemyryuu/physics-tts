@@ -1,5 +1,5 @@
 const QUESTIONS_DATA = [
-  // --- RONDE 1 (1–12) ---
+  // === RONDE 1 (1–12) ===
   {
     number: 1,
     round: 1,
@@ -97,7 +97,7 @@ const QUESTIONS_DATA = [
     text: "Alat untuk mengukur tekanan gas atau fluida."
   },
 
-  // --- RONDE 2 (13–24) ---
+  // === RONDE 2 (13–24) ===
   {
     number: 13,
     round: 2,
@@ -195,7 +195,7 @@ const QUESTIONS_DATA = [
     text: "Prinsip bahwa tekanan pada fluida tertutup diteruskan sama besar."
   },
 
-  // --- RONDE 3 (25–36) ---
+  // === RONDE 3 (25–36) ===
   {
     number: 25,
     round: 3,
@@ -293,7 +293,7 @@ const QUESTIONS_DATA = [
     text: "Jarak vertikal dari permukaan fluida ke suatu titik."
   },
 
-  // --- SISA NOMOR (37–50) ---
+  // === SISA NOMOR (37–50) ===
   {
     number: 37,
     round: 4,
@@ -408,6 +408,7 @@ const QUESTIONS_DATA = [
   }
 ];
 
+// === KONFIGURASI RONDE ===
 const ROUNDS_CONFIG = [
   { id: "all", label: "Semua Soal", range: "1–50", total: 50 },
   { id: "1", label: "Ronde 1", range: "1–12", total: 12 },

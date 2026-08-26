@@ -1,23 +1,18 @@
-/**
- * Physics TTS Question Selector - Application Logic
- */
-
-// State
+// === STATE & KONFIGURASI ===
 let currentFilter = "all";
 let currentQuestionIndex = null;
 let completedQuestions = new Set();
 
-// Timer variables
-const TRANSITION_DURATION = 5; // 5 detik transisi
-const QUESTION_DURATION = 45;  // 45 detik soal
+const TRANSITION_DURATION = 5;
+const QUESTION_DURATION = 45;
 
-let timerState = "IDLE"; // "IDLE" | "TRANSITION" | "QUESTION" | "PAUSED"
+let timerState = "IDLE";
 let previousState = "IDLE";
 let timeRemaining = QUESTION_DURATION;
 let timerInterval = null;
 let soundEnabled = true;
 
-// Web Audio API Sound Synthesizer
+// === AUDIO SYNTHESIZER ===
 let audioCtx = null;
 
 function getAudioContext() {
@@ -91,7 +86,7 @@ function playTimesUpBuzzer() {
   } catch (e) {}
 }
 
-// Local Storage helpers
+// === PENYIMPANAN LOKAL ===
 const STORAGE_KEY = "physics_tts_completed_q";
 
 function loadCompletedQuestions() {
@@ -113,7 +108,7 @@ function saveCompletedQuestions() {
   }
 }
 
-// Initialize Application
+// === INISIALISASI & TAB FILTER ===
 document.addEventListener("DOMContentLoaded", () => {
   loadCompletedQuestions();
   initTabs();
@@ -122,7 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
 });
 
-// Setup Tabs & Filtering
 function initTabs() {
   const tabsContainer = document.getElementById("filterTabs");
   tabsContainer.innerHTML = "";
@@ -142,12 +136,11 @@ function initTabs() {
   });
 }
 
-// Render Grid
+// === GRID SOAL ===
 function renderGrid() {
   const container = document.getElementById("questionsContainer");
   container.innerHTML = "";
 
-  // Group questions according to filter
   let roundsToDisplay = [];
   if (currentFilter === "all") {
     roundsToDisplay = [
@@ -225,7 +218,7 @@ function updateProgressStats() {
   }
 }
 
-// Open Question Modal
+// === MODAL SOAL ===
 function openQuestionModal(questionNumber) {
   const index = QUESTIONS_DATA.findIndex(q => q.number === questionNumber);
   if (index === -1) return;
@@ -233,7 +226,6 @@ function openQuestionModal(questionNumber) {
   currentQuestionIndex = index;
   const q = QUESTIONS_DATA[index];
 
-  // Update UI Elements
   document.getElementById("modalRoundTag").textContent = q.roundName || `Ronde ${q.round}`;
   document.getElementById("modalNumberTitle").textContent = `Nomor ${q.number}`;
   
@@ -251,7 +243,6 @@ function openQuestionModal(questionNumber) {
   const backdrop = document.getElementById("questionModalBackdrop");
   backdrop.classList.add("active");
 
-  // Start 5-second transition countdown automatically
   startTransitionTimer();
 }
 
@@ -284,10 +275,7 @@ function closeModal() {
   updateProgressStats();
 }
 
-// ==========================================================================
-// Timer Logic (5s Transition -> 45s Clue Countdown)
-// ==========================================================================
-
+// === SISTEM TIMER & TRANSISI ===
 function startTransitionTimer() {
   stopTimer();
   timerState = "TRANSITION";
@@ -395,7 +383,6 @@ function updateTimerUI(seconds, totalDuration, labelText) {
   const percentage = Math.max(0, Math.min(100, (seconds / totalDuration) * 100));
   timerProgress.style.width = `${percentage}%`;
 
-  // Dynamic alert classes
   timerContainer.classList.remove("timer-warning", "timer-danger");
   if (timerState === "QUESTION") {
     if (seconds <= 10 && seconds > 0) {
@@ -416,28 +403,21 @@ function showTransitionBanner(show, message = "") {
   }
 }
 
-// ==========================================================================
-// User Interaction & Action Handlers
-// ==========================================================================
-
+// === EVENT LISTENERS & SHORTCUTS ===
 function setupEventListeners() {
-  // Modal Close buttons
   document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
   document.getElementById("btnBackToGrid").addEventListener("click", closeModal);
 
-  // Close on clicking backdrop
   document.getElementById("questionModalBackdrop").addEventListener("click", (e) => {
     if (e.target.id === "questionModalBackdrop") {
       closeModal();
     }
   });
 
-  // Timer Buttons
   document.getElementById("btnPauseResume").addEventListener("click", pauseOrResumeTimer);
   document.getElementById("btnResetTimer").addEventListener("click", resetTimer);
   document.getElementById("btnSkipTransition").addEventListener("click", skipTransition);
 
-  // Navigation Buttons
   document.getElementById("btnPrevQuestion").addEventListener("click", () => {
     if (currentQuestionIndex > 0) {
       openQuestionModal(QUESTIONS_DATA[currentQuestionIndex - 1].number);
@@ -450,7 +430,6 @@ function setupEventListeners() {
     }
   });
 
-  // Completed toggle
   document.getElementById("btnToggleCompleted").addEventListener("click", () => {
     const q = QUESTIONS_DATA[currentQuestionIndex];
     if (completedQuestions.has(q.number)) {
@@ -465,7 +444,6 @@ function setupEventListeners() {
     updateProgressStats();
   });
 
-  // Reset Progress Button in Header
   document.getElementById("btnResetAllProgress").addEventListener("click", () => {
     if (confirm("Apakah Anda yakin ingin mereset semua status soal yang telah selesai?")) {
       completedQuestions.clear();
@@ -476,7 +454,6 @@ function setupEventListeners() {
     }
   });
 
-  // Sound Toggle Button
   const btnToggleSound = document.getElementById("btnToggleSound");
   btnToggleSound.addEventListener("click", () => {
     soundEnabled = !soundEnabled;
@@ -484,10 +461,8 @@ function setupEventListeners() {
     showToast(soundEnabled ? "Suara diaktifkan" : "Suara dimatikan");
   });
 
-  // Fullscreen Button
   document.getElementById("btnFullscreen").addEventListener("click", toggleFullscreen);
 
-  // Global Keyboard Shortcuts
   document.addEventListener("keydown", handleKeydown);
 }
 
@@ -501,7 +476,6 @@ function handleKeydown(e) {
 
   if (isModalOpen) {
     if (e.code === "Space") {
-      // Prevent scrolling on space
       e.preventDefault();
       pauseOrResumeTimer();
     } else if (e.key === "r" || e.key === "R") {
@@ -520,6 +494,7 @@ function handleKeydown(e) {
   }
 }
 
+// === NOTIFIKASI & LAYAR PENUH ===
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen().catch(err => {
