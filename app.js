@@ -251,10 +251,10 @@ function renderGrid() {
   let roundsToDisplay = [];
   if (currentFilter === "all") {
     roundsToDisplay = [
-      { id: 1, name: "Ronde 1 (1–12)", range: [1, 12] },
-      { id: 2, name: "Ronde 2 (13–24)", range: [13, 24] },
-      { id: 3, name: "Ronde 3 (25–36)", range: [25, 36] },
-      { id: 4, name: "Sisa Nomor (37–50)", range: [37, 50] }
+      { id: 1, name: "Ronde 1 (1 - 12)", range: [1, 12] },
+      { id: 2, name: "Ronde 2 (13 - 24)", range: [13, 24] },
+      { id: 3, name: "Ronde 3 (25 - 36)", range: [25, 36] },
+      { id: 4, name: "Sisa Nomor (37 - 50)", range: [37, 50] }
     ];
   } else {
     const rId = parseInt(currentFilter, 10);
@@ -607,7 +607,7 @@ function showRoundCompleteScreen(roundNumber) {
     document.getElementById("roundCompleteTitle").textContent = "Luar Biasa! Semua Ronde Selesai";
     document.getElementById("roundCompleteDesc").textContent = "50 Soal TTS Fluida & Mekanika Fisika telah rampung diselesaikan.";
     
-    btnContinueText.textContent = "Ulangi dari Ronde 1 (1–12)";
+    btnContinueText.textContent = "Ulangi dari Ronde 1 (1 - 12)";
     btnContinue.style.display = "inline-flex";
 
     btnContinue.onclick = () => {

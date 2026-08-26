@@ -5,10 +5,10 @@ Website interaktif dan minimalis untuk pemilihan soal kuis Teka-Teki Silang (TTS
 ## 🚀 Fitur Utama
 
 - **50 Soal Fluida & Mekanika Fisika:**
-  - **Ronde 1 (1–12):** 7 Mendatar & 5 Menurun
-  - **Ronde 2 (13–24):** 4 Mendatar & 8 Menurun
-  - **Ronde 3 (25–36):** 7 Mendatar & 5 Menurun
-  - **Sisa Nomor (37–50):** 7 Mendatar & 7 Menurun
+  - **Ronde 1 (1 - 12):** 7 Mendatar & 5 Menurun
+  - **Ronde 2 (13 - 24):** 4 Mendatar & 8 Menurun
+  - **Ronde 3 (25 - 36):** 7 Mendatar & 5 Menurun
+  - **Sisa Nomor (37 - 50):** 7 Mendatar & 7 Menurun
 - **Desain Minimalis Putih:** Latar belakang putih bersih (`#ffffff`) dengan teks kontras tinggi, ideal untuk proyektor dan layar besar.
 - **Pembeda Visual Jelas:**
   - ➡️ **Mendatar (Biru)**
@@ -17,7 +17,7 @@ Website interaktif dan minimalis untuk pemilihan soal kuis Teka-Teki Silang (TTS
 - **Timer & Transisi:**
   - **Transisi 5 Detik:** Hitung mundur persiapan sebelum waktu pengerjaan soal dimulai.
   - **Waktu Menjawab 45 Detik:** Hitung mundur dengan indikator progres bar dan perubahan warna otomatis saat waktu menipis.
-- **Efek Suara Sintetis (Web Audio API) & Pengatur Volume:** Bip transisi, denting mulai, alarm 10 detik terakhir, dan bel waktu habis dengan slider volume interaktif (0–100%) dan tombol mute/unmute yang tersimpan otomatis.
+- **Efek Suara Sintetis (Web Audio API) & Pengatur Volume:** Bip transisi, denting mulai, alarm 10 detik terakhir, dan bel waktu habis dengan slider volume interaktif (0 - 100%) dan tombol mute/unmute yang tersimpan otomatis.
 - **Layar Ronde Selesai & Lanjut Ronde:** Tampilan perayaan saat ronde selesai (nomor 12, 24, 36, 50) dengan ringkasan statistik dan opsi instan untuk melanjutkan ke ronde berikutnya.
 - **Penanda Status Soal:** Tandai soal yang sudah selesai agar tidak terpilih dua kali.
 - **Dukungan Pintasan Keyboard:**

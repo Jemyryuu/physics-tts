@@ -1,9 +1,9 @@
 const QUESTIONS_DATA = [
-  // === RONDE 1 (1–12) ===
+  // === RONDE 1 (1 - 12) ===
   {
     number: 1,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "menurun",
     direction: "Menurun",
     text: "Besarnya ruang yang ditempati suatu benda."
@@ -11,7 +11,7 @@ const QUESTIONS_DATA = [
   {
     number: 2,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Gaya tarik-menarik antarmolekul sejenis."
@@ -19,7 +19,7 @@ const QUESTIONS_DATA = [
   {
     number: 3,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Keadaan benda ketika gaya apung menopang beratnya."
@@ -27,7 +27,7 @@ const QUESTIONS_DATA = [
   {
     number: 4,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Bentuk permukaan cairan dalam wadah atau tabung."
@@ -35,7 +35,7 @@ const QUESTIONS_DATA = [
   {
     number: 5,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "menurun",
     direction: "Menurun",
     text: "Tabung tempat piston bergerak."
@@ -43,7 +43,7 @@ const QUESTIONS_DATA = [
   {
     number: 6,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "menurun",
     direction: "Menurun",
     text: "Sistem yang menggunakan tekanan fluida untuk memindahkan gaya."
@@ -51,7 +51,7 @@ const QUESTIONS_DATA = [
   {
     number: 7,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Istilah lain untuk massa jenis."
@@ -59,7 +59,7 @@ const QUESTIONS_DATA = [
   {
     number: 8,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "menurun",
     direction: "Menurun",
     text: "Istilah bahasa Inggris untuk garis arus."
@@ -67,7 +67,7 @@ const QUESTIONS_DATA = [
   {
     number: 9,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Volume fluida yang mengalir tiap satuan waktu."
@@ -75,7 +75,7 @@ const QUESTIONS_DATA = [
   {
     number: 10,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "menurun",
     direction: "Menurun",
     text: "Komponen yang bergerak di dalam silinder."
@@ -83,7 +83,7 @@ const QUESTIONS_DATA = [
   {
     number: 11,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Batas bagian atas fluida."
@@ -91,17 +91,17 @@ const QUESTIONS_DATA = [
   {
     number: 12,
     round: 1,
-    roundName: "Ronde 1 (1–12)",
+    roundName: "Ronde 1 (1 - 12)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Alat untuk mengukur tekanan gas atau fluida."
   },
 
-  // === RONDE 2 (13–24) ===
+  // === RONDE 2 (13 - 24) ===
   {
     number: 13,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "menurun",
     direction: "Menurun",
     text: "Kecenderungan permukaan cairan seperti memiliki selaput."
@@ -109,7 +109,7 @@ const QUESTIONS_DATA = [
   {
     number: 14,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "menurun",
     direction: "Menurun",
     text: "Pipa berdiameter sangat kecil yang menunjukkan kapilaritas."
@@ -117,7 +117,7 @@ const QUESTIONS_DATA = [
   {
     number: 15,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Rem kendaraan yang memanfaatkan tekanan fluida."
@@ -125,7 +125,7 @@ const QUESTIONS_DATA = [
   {
     number: 16,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "menurun",
     direction: "Menurun",
     text: "Prinsip tentang gaya ke atas pada benda dalam fluida."
@@ -133,7 +133,7 @@ const QUESTIONS_DATA = [
   {
     number: 17,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Prinsip kekekalan laju aliran massa fluida."
@@ -141,7 +141,7 @@ const QUESTIONS_DATA = [
   {
     number: 18,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "menurun",
     direction: "Menurun",
     text: "Ilmuwan yang merumuskan prinsip gaya apung."
@@ -149,7 +149,7 @@ const QUESTIONS_DATA = [
   {
     number: 19,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "menurun",
     direction: "Menurun",
     text: "Tekanan yang diberikan oleh udara atmosfer."
@@ -157,7 +157,7 @@ const QUESTIONS_DATA = [
   {
     number: 20,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "menurun",
     direction: "Menurun",
     text: "Satuan SI untuk tekanan."
@@ -165,7 +165,7 @@ const QUESTIONS_DATA = [
   {
     number: 21,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "menurun",
     direction: "Menurun",
     text: "Nama ilmuwan yang merumuskan persamaan Bernoulli."
@@ -173,7 +173,7 @@ const QUESTIONS_DATA = [
   {
     number: 22,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "menurun",
     direction: "Menurun",
     text: "Berat suatu zat tiap satuan volume."
@@ -181,7 +181,7 @@ const QUESTIONS_DATA = [
   {
     number: 23,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Gaya tarik-menarik antara molekul berbeda jenis."
@@ -189,17 +189,17 @@ const QUESTIONS_DATA = [
   {
     number: 24,
     round: 2,
-    roundName: "Ronde 2 (13–24)",
+    roundName: "Ronde 2 (13 - 24)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Prinsip bahwa tekanan pada fluida tertutup diteruskan sama besar."
   },
 
-  // === RONDE 3 (25–36) ===
+  // === RONDE 3 (25 - 36) ===
   {
     number: 25,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "menurun",
     direction: "Menurun",
     text: "Ukuran bidang tempat gaya bekerja."
@@ -207,7 +207,7 @@ const QUESTIONS_DATA = [
   {
     number: 26,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "menurun",
     direction: "Menurun",
     text: "Berkaitan dengan fluida dalam keadaan diam."
@@ -215,7 +215,7 @@ const QUESTIONS_DATA = [
   {
     number: 27,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "menurun",
     direction: "Menurun",
     text: "Tekanan akibat berat fluida yang diam."
@@ -223,7 +223,7 @@ const QUESTIONS_DATA = [
   {
     number: 28,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Lama berlangsungnya aliran."
@@ -231,7 +231,7 @@ const QUESTIONS_DATA = [
   {
     number: 29,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Persamaan yang menghubungkan luas penampang dan kecepatan aliran."
@@ -239,7 +239,7 @@ const QUESTIONS_DATA = [
   {
     number: 30,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "menurun",
     direction: "Menurun",
     text: "Jarak yang ditempuh fluida tiap satuan waktu."
@@ -247,7 +247,7 @@ const QUESTIONS_DATA = [
   {
     number: 31,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Alat untuk mengukur tekanan atmosfer."
@@ -255,7 +255,7 @@ const QUESTIONS_DATA = [
   {
     number: 32,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "menurun",
     direction: "Menurun",
     text: "Cabang ilmu yang mempelajari fluida dalam keadaan diam."
@@ -263,7 +263,7 @@ const QUESTIONS_DATA = [
   {
     number: 33,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Hubungan tekanan, kecepatan, dan ketinggian fluida."
@@ -271,7 +271,7 @@ const QUESTIONS_DATA = [
   {
     number: 34,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Alat untuk mengukur massa jenis cairan."
@@ -279,7 +279,7 @@ const QUESTIONS_DATA = [
   {
     number: 35,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Bagian volume benda yang berada di dalam fluida."
@@ -287,17 +287,17 @@ const QUESTIONS_DATA = [
   {
     number: 36,
     round: 3,
-    roundName: "Ronde 3 (25–36)",
+    roundName: "Ronde 3 (25 - 36)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Jarak vertikal dari permukaan fluida ke suatu titik."
   },
 
-  // === SISA NOMOR (37–50) ===
+  // === SISA NOMOR (37 - 50) ===
   {
     number: 37,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "menurun",
     direction: "Menurun",
     text: "Gaya apung sama dengan berat benda."
@@ -305,7 +305,7 @@ const QUESTIONS_DATA = [
   {
     number: 38,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Gaya yang bekerja pada setiap satuan luas."
@@ -313,7 +313,7 @@ const QUESTIONS_DATA = [
   {
     number: 39,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Beratnya lebih besar daripada gaya apung."
@@ -321,7 +321,7 @@ const QUESTIONS_DATA = [
   {
     number: 40,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "menurun",
     direction: "Menurun",
     text: "Tarikan atau dorongan yang bekerja pada benda."
@@ -329,7 +329,7 @@ const QUESTIONS_DATA = [
   {
     number: 41,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Gaya gravitasi yang bekerja pada benda."
@@ -337,7 +337,7 @@ const QUESTIONS_DATA = [
   {
     number: 42,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "menurun",
     direction: "Menurun",
     text: "Peristiwa naik atau turunnya cairan dalam pipa sempit."
@@ -345,7 +345,7 @@ const QUESTIONS_DATA = [
   {
     number: 43,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "menurun",
     direction: "Menurun",
     text: "Zat yang dapat mengalir."
@@ -353,7 +353,7 @@ const QUESTIONS_DATA = [
   {
     number: 44,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Massa tiap satuan volume suatu zat."
@@ -361,7 +361,7 @@ const QUESTIONS_DATA = [
   {
     number: 45,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "menurun",
     direction: "Menurun",
     text: "Fluida yang bentuk dan volumenya mengikuti ruang yang ditempatinya."
@@ -369,7 +369,7 @@ const QUESTIONS_DATA = [
   {
     number: 46,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Gaya ke atas yang diberikan fluida pada benda."
@@ -377,7 +377,7 @@ const QUESTIONS_DATA = [
   {
     number: 47,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Fluida yang sedang bergerak atau mengalir."
@@ -385,7 +385,7 @@ const QUESTIONS_DATA = [
   {
     number: 48,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "menurun",
     direction: "Menurun",
     text: "Alat yang memanfaatkan prinsip hidrolik untuk mengangkat beban."
@@ -393,7 +393,7 @@ const QUESTIONS_DATA = [
   {
     number: 49,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "menurun",
     direction: "Menurun",
     text: "Gerakan fluida dari satu tempat ke tempat lain."
@@ -401,7 +401,7 @@ const QUESTIONS_DATA = [
   {
     number: 50,
     round: 4,
-    roundName: "Sisa Nomor (37–50)",
+    roundName: "Sisa Nomor (37 - 50)",
     type: "mendatar",
     direction: "Mendatar",
     text: "Fluida yang memiliki volume tetap tetapi bentuk mengikuti wadah."
@@ -410,9 +410,9 @@ const QUESTIONS_DATA = [
 
 // === KONFIGURASI RONDE ===
 const ROUNDS_CONFIG = [
-  { id: "all", label: "Semua Soal", range: "1–50", total: 50 },
-  { id: "1", label: "Ronde 1", range: "1–12", total: 12 },
-  { id: "2", label: "Ronde 2", range: "13–24", total: 12 },
-  { id: "3", label: "Ronde 3", range: "25–36", total: 12 },
-  { id: "4", label: "Sisa Nomor", range: "37–50", total: 14 }
+  { id: "all", label: "Semua Soal", range: "1 - 50", total: 50 },
+  { id: "1", label: "Ronde 1", range: "1 - 12", total: 12 },
+  { id: "2", label: "Ronde 2", range: "13 - 24", total: 12 },
+  { id: "3", label: "Ronde 3", range: "25 - 36", total: 12 },
+  { id: "4", label: "Sisa Nomor", range: "37 - 50", total: 14 }
 ];
