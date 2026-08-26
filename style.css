@@ -179,6 +179,99 @@ body {
   font-size: 0.775rem;
 }
 
+/* === KONTROL VOLUME === */
+.volume-control-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.55rem;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.volume-control-wrapper:hover {
+  background: var(--bg-surface);
+  border-color: var(--border-strong);
+}
+
+.volume-btn {
+  border: none;
+  background: transparent;
+  padding: 0.15rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease;
+}
+
+.volume-btn:hover {
+  color: var(--text-primary);
+}
+
+.volume-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 65px;
+  height: 4px;
+  background: var(--border-strong);
+  border-radius: var(--radius-full);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: transform 0.1s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: transform 0.1s ease;
+}
+
+.volume-slider::-moz-range-thumb:hover {
+  transform: scale(1.25);
+}
+
+.volume-percent {
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 28px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 /* === FILTER & STATISTIK === */
 .main-content {
   flex: 1;

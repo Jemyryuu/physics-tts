@@ -12,6 +12,7 @@ let timeRemaining = QUESTION_DURATION;
 let timerInterval = null;
 let autoNextTimeout = null;
 let soundEnabled = true;
+let soundVolume = 0.8; // Nilai 0.0 - 1.0 (default 80%)
 
 const SVG_ICONS = {
   mendatar: `<svg class="icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`,
@@ -20,12 +21,14 @@ const SVG_ICONS = {
   circle: `<svg class="icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>`,
   pause: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`,
   play: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
-  volumeOn: `<svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
+  volumeHigh: `<svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
+  volumeLow: `<svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
   volumeOff: `<svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
 };
 
-// === AUDIO SYNTHESIZER ===
+// === AUDIO SYNTHESIZER & VOLUME CONTROL ===
 let audioCtx = null;
+let volumeTestTimeout = null;
 
 function getAudioContext() {
   if (!audioCtx) {
@@ -40,8 +43,72 @@ function getAudioContext() {
   return audioCtx;
 }
 
-function playBeep(freq = 440, type = "sine", duration = 0.15, gainVal = 0.1) {
-  if (!soundEnabled) return;
+function setVolume(volume, isUserInput = false) {
+  volume = Math.max(0, Math.min(1, volume));
+  soundVolume = volume;
+  
+  if (volume === 0) {
+    soundEnabled = false;
+  } else {
+    soundEnabled = true;
+  }
+  
+  saveAudioSettings();
+  updateVolumeUI();
+  
+  if (isUserInput && soundEnabled) {
+    playVolumeTestTone();
+  }
+}
+
+function playVolumeTestTone() {
+  if (volumeTestTimeout) clearTimeout(volumeTestTimeout);
+  volumeTestTimeout = setTimeout(() => {
+    playBeep(587.33, "triangle", 0.12, 0.35);
+  }, 100);
+}
+
+function toggleSoundMute() {
+  if (soundEnabled && soundVolume > 0) {
+    soundEnabled = false;
+    showToast("Suara dimatikan (Mute)");
+  } else {
+    soundEnabled = true;
+    if (soundVolume === 0) {
+      soundVolume = 0.8;
+    }
+    showToast(`Suara diaktifkan (${Math.round(soundVolume * 100)}%)`);
+    playVolumeTestTone();
+  }
+  saveAudioSettings();
+  updateVolumeUI();
+}
+
+function updateVolumeUI() {
+  const slider = document.getElementById("volumeSlider");
+  const percentText = document.getElementById("volumePercent");
+  const btnToggle = document.getElementById("btnToggleSound");
+  
+  const currentPercent = (soundEnabled && soundVolume > 0) ? Math.round(soundVolume * 100) : 0;
+  
+  if (slider) {
+    slider.value = currentPercent;
+  }
+  if (percentText) {
+    percentText.textContent = `${currentPercent}%`;
+  }
+  if (btnToggle) {
+    let iconSvg = SVG_ICONS.volumeOff;
+    if (soundEnabled && soundVolume > 0) {
+      iconSvg = soundVolume > 0.5 ? SVG_ICONS.volumeHigh : SVG_ICONS.volumeLow;
+    }
+    btnToggle.innerHTML = iconSvg;
+    btnToggle.title = (soundEnabled && soundVolume > 0) ? `Mute Suara (${currentPercent}%)` : "Unmute Suara";
+  }
+}
+
+function playBeep(freq = 440, type = "sine", duration = 0.15, gainVal = 0.35) {
+  if (!soundEnabled || soundVolume <= 0) return;
   try {
     const ctx = getAudioContext();
     if (!ctx) return;
@@ -51,7 +118,8 @@ function playBeep(freq = 440, type = "sine", duration = 0.15, gainVal = 0.1) {
     osc.type = type;
     osc.frequency.setValueAtTime(freq, ctx.currentTime);
     
-    gain.gain.setValueAtTime(gainVal, ctx.currentTime);
+    const effectiveGain = Math.min(0.95, gainVal * soundVolume);
+    gain.gain.setValueAtTime(effectiveGain, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
     
     osc.connect(gain);
@@ -65,34 +133,34 @@ function playBeep(freq = 440, type = "sine", duration = 0.15, gainVal = 0.1) {
 }
 
 function playTransitionBeep() {
-  playBeep(520, "sine", 0.08, 0.07);
+  playBeep(520, "sine", 0.08, 0.28);
 }
 
 function playStartChime() {
-  if (!soundEnabled) return;
+  if (!soundEnabled || soundVolume <= 0) return;
   try {
     const ctx = getAudioContext();
     if (!ctx) return;
     [523.25, 659.25, 783.99].forEach((freq, idx) => {
       setTimeout(() => {
-        playBeep(freq, "triangle", 0.25, 0.1);
+        playBeep(freq, "triangle", 0.25, 0.38);
       }, idx * 90);
     });
   } catch (e) {}
 }
 
 function playUrgentBeep() {
-  playBeep(880, "square", 0.1, 0.07);
+  playBeep(880, "square", 0.1, 0.28);
 }
 
 function playTimesUpBuzzer() {
-  if (!soundEnabled) return;
+  if (!soundEnabled || soundVolume <= 0) return;
   try {
     const ctx = getAudioContext();
     if (!ctx) return;
     [300, 250, 200].forEach((freq, idx) => {
       setTimeout(() => {
-        playBeep(freq, "sawtooth", 0.35, 0.12);
+        playBeep(freq, "sawtooth", 0.35, 0.45);
       }, idx * 130);
     });
   } catch (e) {}
@@ -100,6 +168,7 @@ function playTimesUpBuzzer() {
 
 // === PENYIMPANAN LOKAL ===
 const STORAGE_KEY = "physics_tts_completed_q";
+const SOUND_SETTINGS_KEY = "physics_tts_sound_settings";
 
 function loadCompletedQuestions() {
   try {
@@ -120,9 +189,35 @@ function saveCompletedQuestions() {
   }
 }
 
+function loadAudioSettings() {
+  try {
+    const saved = localStorage.getItem(SOUND_SETTINGS_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (typeof parsed.enabled === "boolean") soundEnabled = parsed.enabled;
+      if (typeof parsed.volume === "number") soundVolume = Math.max(0, Math.min(1, parsed.volume));
+    }
+  } catch (e) {
+    console.warn("Error loading audio settings", e);
+  }
+  updateVolumeUI();
+}
+
+function saveAudioSettings() {
+  try {
+    localStorage.setItem(SOUND_SETTINGS_KEY, JSON.stringify({
+      enabled: soundEnabled,
+      volume: soundVolume
+    }));
+  } catch (e) {
+    console.warn("Error saving audio settings", e);
+  }
+}
+
 // === INISIALISASI & TAB FILTER ===
 document.addEventListener("DOMContentLoaded", () => {
   loadCompletedQuestions();
+  loadAudioSettings();
   initTabs();
   renderGrid();
   updateProgressStats();
@@ -398,6 +493,23 @@ function skipTransition() {
   }
 }
 
+function skipQuestionTimer() {
+  stopTimer();
+  timerState = "IDLE";
+  timeRemaining = 0;
+  playTimesUpBuzzer();
+  updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS");
+
+  if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
+    showToast("Timer soal dilewati. Beralih ke soal berikutnya...");
+    autoNextTimeout = setTimeout(() => {
+      openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
+    }, 800);
+  } else {
+    showToast("Timer soal dilewati. Seluruh soal telah selesai.");
+  }
+}
+
 function stopTimer() {
   if (timerInterval) {
     clearInterval(timerInterval);
@@ -446,6 +558,11 @@ function setupEventListeners() {
   document.getElementById("btnPauseResume").addEventListener("click", pauseOrResumeTimer);
   document.getElementById("btnResetTimer").addEventListener("click", resetTimer);
   document.getElementById("btnSkipTransition").addEventListener("click", skipTransition);
+  
+  const btnSkipQ = document.getElementById("btnSkipQuestionTimer");
+  if (btnSkipQ) {
+    btnSkipQ.addEventListener("click", skipQuestionTimer);
+  }
 
   document.getElementById("btnPrevQuestion").addEventListener("click", () => {
     if (currentQuestionIndex > 0) {
@@ -484,13 +601,17 @@ function setupEventListeners() {
   });
 
   const btnToggleSound = document.getElementById("btnToggleSound");
-  btnToggleSound.addEventListener("click", () => {
-    soundEnabled = !soundEnabled;
-    btnToggleSound.innerHTML = soundEnabled 
-      ? `${SVG_ICONS.volumeOn} <span>Suara</span>` 
-      : `${SVG_ICONS.volumeOff} <span>Suara</span>`;
-    showToast(soundEnabled ? "Suara diaktifkan" : "Suara dimatikan");
-  });
+  if (btnToggleSound) {
+    btnToggleSound.addEventListener("click", toggleSoundMute);
+  }
+
+  const volumeSlider = document.getElementById("volumeSlider");
+  if (volumeSlider) {
+    volumeSlider.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value, 10);
+      setVolume(val / 100, true);
+    });
+  }
 
   document.getElementById("btnFullscreen").addEventListener("click", toggleFullscreen);
 
@@ -505,6 +626,11 @@ function handleKeydown(e) {
     return;
   }
 
+  if (e.key === "m" || e.key === "M") {
+    toggleSoundMute();
+    return;
+  }
+
   if (isModalOpen) {
     if (e.code === "Space") {
       e.preventDefault();
@@ -513,6 +639,8 @@ function handleKeydown(e) {
       resetTimer();
     } else if (e.key === "s" || e.key === "S") {
       skipTransition();
+    } else if (e.key === "t" || e.key === "T" || e.key === "k" || e.key === "K") {
+      skipQuestionTimer();
     } else if (e.key === "ArrowLeft") {
       if (currentQuestionIndex > 0) {
         openQuestionModal(QUESTIONS_DATA[currentQuestionIndex - 1].number);
