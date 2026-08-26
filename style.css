@@ -195,12 +195,30 @@ body {
   letter-spacing: 0.06em;
 }
 
+.brand-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
 .brand-title {
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
+  line-height: 1.2;
   white-space: nowrap;
+}
+
+.brand-author {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.brand-author strong {
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .header-controls {
@@ -1003,11 +1021,42 @@ body {
 .footer {
   border-top: 1px solid var(--border-subtle);
   padding: 1.25rem 1.5rem;
-  text-align: center;
-  font-size: 0.775rem;
-  color: var(--text-muted);
-  background: var(--bg-canvas);
+  background: var(--bg-surface);
   margin-top: auto;
+}
+
+.footer-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.footer-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background: var(--bg-canvas);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xs);
+}
+
+.footer-credit strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.footer-info {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 /* ==========================================================================
@@ -1071,12 +1120,16 @@ body {
   }
 
   .brand-title {
-    font-size: 1rem;
+    font-size: 0.975rem;
+  }
+
+  .brand-author {
+    font-size: 0.625rem;
   }
 
   .brand-badge {
-    font-size: 0.65rem;
-    padding: 0.15rem 0.4rem;
+    font-size: 0.625rem;
+    padding: 0.15rem 0.35rem;
   }
 
   .header-controls {
@@ -1357,6 +1410,25 @@ body {
     bottom: 1.25rem;
     font-size: 0.75rem;
     padding: 0.45rem 0.95rem;
+  }
+
+  .footer {
+    padding: 1.15rem 1rem;
+  }
+
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.45rem;
+  }
+
+  .footer-credit {
+    font-size: 0.775rem;
+    padding: 0.35rem 0.75rem;
+  }
+
+  .footer-info {
+    font-size: 0.725rem;
   }
 }
 

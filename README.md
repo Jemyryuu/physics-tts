@@ -48,3 +48,9 @@ Aplikasi ini murni menggunakan **HTML5, CSS3, dan Vanilla JavaScript**, sehingga
    git clone https://github.com/Jemyryuu/physics-tts.git
    ```
 2. Buka file `index.html` langsung di peramban (browser) favorit Anda (Google Chrome, Microsoft Edge, Mozilla Firefox, Safari).
+
+---
+
+## 👤 Author & Credit
+
+Made by **Raffasya Zhafran / XI-3**
