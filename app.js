@@ -13,6 +13,17 @@ let timerInterval = null;
 let autoNextTimeout = null;
 let soundEnabled = true;
 
+const SVG_ICONS = {
+  mendatar: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`,
+  menurun: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>`,
+  check: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+  circle: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>`,
+  pause: `<svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`,
+  play: `<svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
+  volumeOn: `<svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
+  volumeOff: `<svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
+};
+
 // === AUDIO SYNTHESIZER ===
 let audioCtx = null;
 
@@ -189,10 +200,11 @@ function renderGrid() {
       card.setAttribute("aria-label", `Soal nomor ${q.number}, ${q.direction}`);
 
       card.innerHTML = `
-        ${isCompleted ? '<span class="card-completed-check">✓</span>' : ''}
+        ${isCompleted ? `<span class="card-completed-check">${SVG_ICONS.check}</span>` : ''}
         <div class="card-number">${q.number}</div>
         <div class="card-badge badge-${q.type}">
-          ${isMendatar ? '➡ Mendatar' : '⬇ Menurun'}
+          ${isMendatar ? SVG_ICONS.mendatar : SVG_ICONS.menurun}
+          <span>${isMendatar ? 'Mendatar' : 'Menurun'}</span>
         </div>
       `;
 
@@ -232,7 +244,10 @@ function openQuestionModal(questionNumber) {
   
   const dirPill = document.getElementById("modalDirectionPill");
   dirPill.className = `modal-direction-pill ${q.type}`;
-  dirPill.innerHTML = q.type === "mendatar" ? `➡ MENDATAR` : `⬇ MENURUN`;
+  dirPill.innerHTML = `
+    ${q.type === "mendatar" ? SVG_ICONS.mendatar : SVG_ICONS.menurun}
+    <span>${q.type === "mendatar" ? "MENDATAR" : "MENURUN"}</span>
+  `;
 
   updateModalCompletedBtn();
   updateModalNavButtons();
@@ -249,10 +264,10 @@ function updateModalCompletedBtn() {
   const btn = document.getElementById("btnToggleCompleted");
 
   if (isCompleted) {
-    btn.innerHTML = `<span>✓</span> Selesai`;
+    btn.innerHTML = `${SVG_ICONS.check} <span>Selesai</span>`;
     btn.classList.add("btn-primary");
   } else {
-    btn.innerHTML = `<span>○</span> Tandai Selesai`;
+    btn.innerHTML = `${SVG_ICONS.circle} <span>Tandai Selesai</span>`;
     btn.classList.remove("btn-primary");
   }
 }
@@ -283,7 +298,7 @@ function startTransitionTimer() {
   document.getElementById("modalClueLabel").textContent = "STATUS: PERSIAPAN";
 
   let transitionSec = TRANSITION_DURATION;
-  document.getElementById("modalClueText").textContent = `⏳ Bersiap! Soal akan ditampilkan dalam ${transitionSec} detik...`;
+  document.getElementById("modalClueText").textContent = `Bersiap! Soal akan ditampilkan dalam ${transitionSec} detik...`;
   updateTimerUI(transitionSec, TRANSITION_DURATION, "Transisi Soal");
   showTransitionBanner(true, `Bersiap! Soal dimulai dalam ${transitionSec} detik...`);
   playTransitionBeep();
@@ -291,7 +306,7 @@ function startTransitionTimer() {
   timerInterval = setInterval(() => {
     transitionSec--;
     if (transitionSec > 0) {
-      document.getElementById("modalClueText").textContent = `⏳ Bersiap! Soal akan ditampilkan dalam ${transitionSec} detik...`;
+      document.getElementById("modalClueText").textContent = `Bersiap! Soal akan ditampilkan dalam ${transitionSec} detik...`;
       updateTimerUI(transitionSec, TRANSITION_DURATION, "Transisi Soal");
       showTransitionBanner(true, `Bersiap! Soal dimulai dalam ${transitionSec} detik...`);
       playTransitionBeep();
@@ -338,12 +353,12 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
       updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS!");
 
       if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
-        showToast("⏰ Waktu habis! Beralih ke soal berikutnya...");
+        showToast("Waktu habis! Beralih ke soal berikutnya...");
         autoNextTimeout = setTimeout(() => {
           openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
         }, 1200);
       } else {
-        showToast("⏰ Waktu habis! Seluruh soal telah selesai.");
+        showToast("Waktu habis! Seluruh soal telah selesai.");
       }
     }
   }, 1000);
@@ -355,23 +370,23 @@ function pauseOrResumeTimer() {
     timerState = "PAUSED";
     previousState = "QUESTION";
     document.getElementById("timerStateLabel").textContent = "JEDA (PAUSED)";
-    document.getElementById("btnPauseResume").innerHTML = `▶ Lanjutkan`;
+    document.getElementById("btnPauseResume").innerHTML = `${SVG_ICONS.play} <span>Lanjutkan</span>`;
   } else if (timerState === "TRANSITION") {
     clearInterval(timerInterval);
     timerState = "PAUSED";
     previousState = "TRANSITION";
     document.getElementById("timerStateLabel").textContent = "JEDA (PAUSED)";
-    document.getElementById("btnPauseResume").innerHTML = `▶ Lanjutkan`;
+    document.getElementById("btnPauseResume").innerHTML = `${SVG_ICONS.play} <span>Lanjutkan</span>`;
   } else if (timerState === "PAUSED") {
     if (previousState === "QUESTION") {
       startQuestionTimer(timeRemaining);
     } else {
       startTransitionTimer();
     }
-    document.getElementById("btnPauseResume").innerHTML = `⏸ Jeda`;
+    document.getElementById("btnPauseResume").innerHTML = `${SVG_ICONS.pause} <span>Jeda</span>`;
   } else if (timerState === "IDLE") {
     startQuestionTimer(QUESTION_DURATION);
-    document.getElementById("btnPauseResume").innerHTML = `⏸ Jeda`;
+    document.getElementById("btnPauseResume").innerHTML = `${SVG_ICONS.pause} <span>Jeda</span>`;
   }
 }
 
@@ -396,7 +411,7 @@ function stopTimer() {
     clearTimeout(autoNextTimeout);
     autoNextTimeout = null;
   }
-  document.getElementById("btnPauseResume").innerHTML = `⏸ Jeda`;
+  document.getElementById("btnPauseResume").innerHTML = `${SVG_ICONS.pause} <span>Jeda</span>`;
 }
 
 function updateTimerUI(seconds, totalDuration, labelText) {
@@ -462,10 +477,10 @@ function setupEventListeners() {
     const q = QUESTIONS_DATA[currentQuestionIndex];
     if (completedQuestions.has(q.number)) {
       completedQuestions.delete(q.number);
-      showToast(`Soal no. ${q.number} ditandai BELUM selesai`);
+      showToast(`Soal no. ${q.number} ditandai belum selesai`);
     } else {
       completedQuestions.add(q.number);
-      showToast(`Soal no. ${q.number} ditandai SELESAI ✓`);
+      showToast(`Soal no. ${q.number} ditandai selesai`);
     }
     saveCompletedQuestions();
     updateModalCompletedBtn();
@@ -485,7 +500,9 @@ function setupEventListeners() {
   const btnToggleSound = document.getElementById("btnToggleSound");
   btnToggleSound.addEventListener("click", () => {
     soundEnabled = !soundEnabled;
-    btnToggleSound.textContent = soundEnabled ? "🔊 Suara: AKTIF" : "🔇 Suara: MATI";
+    btnToggleSound.innerHTML = soundEnabled 
+      ? `${SVG_ICONS.volumeOn} <span>Suara: AKTIF</span>` 
+      : `${SVG_ICONS.volumeOff} <span>Suara: MATI</span>`;
     showToast(soundEnabled ? "Suara diaktifkan" : "Suara dimatikan");
   });
 
