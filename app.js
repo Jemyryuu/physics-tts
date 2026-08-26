@@ -168,25 +168,28 @@ function playTimesUpBuzzer() {
 }
 
 // === PENYIMPANAN LOKAL ===
-const STORAGE_KEY = "physics_tts_completed_q";
+const STORAGE_KEY = "physics_tts_completed_v2";
+const LEGACY_STORAGE_KEY = "physics_tts_completed_q";
 const SOUND_SETTINGS_KEY = "physics_tts_sound_settings";
 
 function loadCompletedQuestions() {
   try {
+    // Hapus data lama agar tidak terjadi ketidaksinkronan dengan soal baru
+    if (localStorage.getItem(LEGACY_STORAGE_KEY)) {
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+    }
+    
+    const validIds = new Set(QUESTIONS_DATA.map(q => q.id));
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      const rawList = JSON.parse(saved);
-      // Dukung migrasi dari ID numerik lama ke ID string unik
-      const converted = rawList.map(item => {
-        if (typeof item === "number" && item >= 1 && item <= QUESTIONS_DATA.length) {
-          return QUESTIONS_DATA[item - 1]?.id || item;
-        }
-        return item;
-      });
-      completedQuestions = new Set(converted);
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        completedQuestions = new Set(parsed.filter(id => validIds.has(id)));
+      }
     }
   } catch (e) {
     console.error(e);
+    completedQuestions = new Set();
   }
 }
 
