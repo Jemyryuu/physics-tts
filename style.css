@@ -853,14 +853,21 @@ body {
    ========================================================================== */
 .modal-footer {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   gap: 0.65rem;
   padding: 0.85rem 1.5rem;
   border-top: 1px solid var(--border-subtle);
   background: var(--bg-canvas);
   flex-shrink: 0;
+}
+
+.modal-footer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
 }
 
 .nav-buttons-group {
@@ -871,6 +878,40 @@ body {
 .status-buttons-group {
   display: flex;
   gap: 0.4rem;
+}
+
+.modal-credit-corner {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--border-subtle);
+  width: 100%;
+  text-align: left;
+}
+
+.modal-credit-corner strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.round-complete-credit {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--border-subtle);
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+}
+
+.round-complete-credit strong {
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 /* ==========================================================================
@@ -1319,7 +1360,11 @@ body {
   .modal-footer {
     padding: 0.65rem 0.85rem;
     gap: 0.35rem;
+  }
+
+  .modal-footer-controls {
     flex-direction: column;
+    gap: 0.35rem;
   }
 
   .nav-buttons-group {
@@ -1346,6 +1391,18 @@ body {
     width: 100%;
     padding: 0.45rem 0.35rem;
     font-size: 0.75rem;
+  }
+
+  .modal-credit-corner {
+    font-size: 0.675rem;
+    padding-top: 0.25rem;
+    justify-content: flex-start;
+  }
+
+  .round-complete-credit {
+    font-size: 0.675rem;
+    margin-top: 0.75rem;
+    padding-top: 0.4rem;
   }
 
   /* Modal Ronde Selesai di Mobile */
