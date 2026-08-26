@@ -14,14 +14,14 @@ let autoNextTimeout = null;
 let soundEnabled = true;
 
 const SVG_ICONS = {
-  mendatar: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`,
-  menurun: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>`,
-  check: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
-  circle: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>`,
-  pause: `<svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`,
-  play: `<svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
-  volumeOn: `<svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
-  volumeOff: `<svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
+  mendatar: `<svg class="icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`,
+  menurun: `<svg class="icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>`,
+  check: `<svg class="icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+  circle: `<svg class="icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>`,
+  pause: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`,
+  play: `<svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
+  volumeOn: `<svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`,
+  volumeOff: `<svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
 };
 
 // === AUDIO SYNTHESIZER ===
@@ -65,7 +65,7 @@ function playBeep(freq = 440, type = "sine", duration = 0.15, gainVal = 0.1) {
 }
 
 function playTransitionBeep() {
-  playBeep(520, "sine", 0.08, 0.08);
+  playBeep(520, "sine", 0.08, 0.07);
 }
 
 function playStartChime() {
@@ -75,14 +75,14 @@ function playStartChime() {
     if (!ctx) return;
     [523.25, 659.25, 783.99].forEach((freq, idx) => {
       setTimeout(() => {
-        playBeep(freq, "triangle", 0.3, 0.12);
-      }, idx * 100);
+        playBeep(freq, "triangle", 0.25, 0.1);
+      }, idx * 90);
     });
   } catch (e) {}
 }
 
 function playUrgentBeep() {
-  playBeep(880, "square", 0.12, 0.08);
+  playBeep(880, "square", 0.1, 0.07);
 }
 
 function playTimesUpBuzzer() {
@@ -92,8 +92,8 @@ function playTimesUpBuzzer() {
     if (!ctx) return;
     [300, 250, 200].forEach((freq, idx) => {
       setTimeout(() => {
-        playBeep(freq, "sawtooth", 0.4, 0.15);
-      }, idx * 150);
+        playBeep(freq, "sawtooth", 0.35, 0.12);
+      }, idx * 130);
     });
   } catch (e) {}
 }
@@ -181,7 +181,7 @@ function renderGrid() {
     roundSection.innerHTML = `
       <div class="round-heading">
         <h2 class="round-title">${round.name}</h2>
-        <span class="round-subtitle">${completedInRound}/${questionsInRound.length} Selesai</span>
+        <span class="round-subtitle">${completedInRound} / ${questionsInRound.length} Selesai</span>
       </div>
       <div class="questions-grid" id="grid-round-${round.id}"></div>
     `;
@@ -227,7 +227,7 @@ function renderGrid() {
 function updateProgressStats() {
   const statsLabel = document.getElementById("progressStats");
   if (statsLabel) {
-    statsLabel.textContent = `${completedQuestions.size}/50 Soal Selesai`;
+    statsLabel.textContent = `${completedQuestions.size} / 50 Selesai`;
   }
 }
 
@@ -292,23 +292,23 @@ function startTransitionTimer() {
   stopTimer();
   timerState = "TRANSITION";
 
-  const q = QUESTIONS_DATA[currentQuestionIndex];
-  const clueBox = document.getElementById("modalClueBox");
-  clueBox.className = `clue-box ${q.type}-accent is-transitioning`;
-  document.getElementById("modalClueLabel").textContent = "STATUS: PERSIAPAN";
+  const transitionView = document.getElementById("transitionStateView");
+  const clueView = document.getElementById("clueTextView");
+  const countdownText = document.getElementById("transitionCountdownText");
+
+  transitionView.classList.add("active");
+  clueView.classList.remove("active");
 
   let transitionSec = TRANSITION_DURATION;
-  document.getElementById("modalClueText").textContent = `Bersiap! Soal akan ditampilkan dalam ${transitionSec} detik...`;
-  updateTimerUI(transitionSec, TRANSITION_DURATION, "Transisi Soal");
-  showTransitionBanner(true, `Bersiap! Soal dimulai dalam ${transitionSec} detik...`);
+  countdownText.textContent = `Soal akan tampil dalam ${transitionSec} detik...`;
+  updateTimerUI(transitionSec, TRANSITION_DURATION, "Fase Persiapan");
   playTransitionBeep();
 
   timerInterval = setInterval(() => {
     transitionSec--;
     if (transitionSec > 0) {
-      document.getElementById("modalClueText").textContent = `Bersiap! Soal akan ditampilkan dalam ${transitionSec} detik...`;
-      updateTimerUI(transitionSec, TRANSITION_DURATION, "Transisi Soal");
-      showTransitionBanner(true, `Bersiap! Soal dimulai dalam ${transitionSec} detik...`);
+      countdownText.textContent = `Soal akan tampil dalam ${transitionSec} detik...`;
+      updateTimerUI(transitionSec, TRANSITION_DURATION, "Fase Persiapan");
       playTransitionBeep();
     } else {
       clearInterval(timerInterval);
@@ -323,17 +323,13 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
   timeRemaining = startFrom;
 
   const q = QUESTIONS_DATA[currentQuestionIndex];
-  const clueBox = document.getElementById("modalClueBox");
-  clueBox.className = `clue-box ${q.type}-accent`;
-  document.getElementById("modalClueLabel").textContent = "PETUNJUK / PERTANYAAN";
-  
-  const clueTextEl = document.getElementById("modalClueText");
-  clueTextEl.textContent = q.text;
-  clueTextEl.classList.remove("reveal-anim");
-  void clueTextEl.offsetWidth;
-  clueTextEl.classList.add("reveal-anim");
+  const transitionView = document.getElementById("transitionStateView");
+  const clueView = document.getElementById("clueTextView");
 
-  showTransitionBanner(false);
+  transitionView.classList.remove("active");
+  clueView.textContent = q.text;
+  clueView.classList.add("active");
+
   updateTimerUI(timeRemaining, QUESTION_DURATION, "Waktu Menjawab");
   playStartChime();
 
@@ -350,15 +346,15 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
       timerInterval = null;
       timerState = "IDLE";
       playTimesUpBuzzer();
-      updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS!");
+      updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS");
 
       if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
-        showToast("Waktu habis! Beralih ke soal berikutnya...");
+        showToast("Waktu habis. Beralih ke soal berikutnya...");
         autoNextTimeout = setTimeout(() => {
           openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
         }, 1200);
       } else {
-        showToast("Waktu habis! Seluruh soal telah selesai.");
+        showToast("Waktu habis. Seluruh soal telah selesai.");
       }
     }
   }, 1000);
@@ -369,13 +365,13 @@ function pauseOrResumeTimer() {
     clearInterval(timerInterval);
     timerState = "PAUSED";
     previousState = "QUESTION";
-    document.getElementById("timerStateLabel").textContent = "JEDA (PAUSED)";
+    document.getElementById("timerStateLabel").textContent = "JEDA";
     document.getElementById("btnPauseResume").innerHTML = `${SVG_ICONS.play} <span>Lanjutkan</span>`;
   } else if (timerState === "TRANSITION") {
     clearInterval(timerInterval);
     timerState = "PAUSED";
     previousState = "TRANSITION";
-    document.getElementById("timerStateLabel").textContent = "JEDA (PAUSED)";
+    document.getElementById("timerStateLabel").textContent = "JEDA";
     document.getElementById("btnPauseResume").innerHTML = `${SVG_ICONS.play} <span>Lanjutkan</span>`;
   } else if (timerState === "PAUSED") {
     if (previousState === "QUESTION") {
@@ -436,16 +432,6 @@ function updateTimerUI(seconds, totalDuration, labelText) {
   }
 }
 
-function showTransitionBanner(show, message = "") {
-  const banner = document.getElementById("transitionBanner");
-  if (show) {
-    banner.textContent = message;
-    banner.classList.add("active");
-  } else {
-    banner.classList.remove("active");
-  }
-}
-
 // === EVENT LISTENERS & SHORTCUTS ===
 function setupEventListeners() {
   document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
@@ -501,8 +487,8 @@ function setupEventListeners() {
   btnToggleSound.addEventListener("click", () => {
     soundEnabled = !soundEnabled;
     btnToggleSound.innerHTML = soundEnabled 
-      ? `${SVG_ICONS.volumeOn} <span>Suara: AKTIF</span>` 
-      : `${SVG_ICONS.volumeOff} <span>Suara: MATI</span>`;
+      ? `${SVG_ICONS.volumeOn} <span>Suara</span>` 
+      : `${SVG_ICONS.volumeOff} <span>Suara</span>`;
     showToast(soundEnabled ? "Suara diaktifkan" : "Suara dimatikan");
   });
 
