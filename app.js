@@ -10,6 +10,7 @@ let timerState = "IDLE";
 let previousState = "IDLE";
 let timeRemaining = QUESTION_DURATION;
 let timerInterval = null;
+let autoNextTimeout = null;
 let soundEnabled = true;
 
 // === AUDIO SYNTHESIZER ===
@@ -331,10 +332,19 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
 
     if (timeRemaining <= 0) {
       clearInterval(timerInterval);
+      timerInterval = null;
       timerState = "IDLE";
       playTimesUpBuzzer();
       updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS!");
-      showToast("⏰ Waktu 45 detik telah habis!");
+
+      if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
+        showToast("⏰ Waktu habis! Beralih ke soal berikutnya...");
+        autoNextTimeout = setTimeout(() => {
+          openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
+        }, 1200);
+      } else {
+        showToast("⏰ Waktu habis! Seluruh soal telah selesai.");
+      }
     }
   }, 1000);
 }
@@ -381,6 +391,10 @@ function stopTimer() {
   if (timerInterval) {
     clearInterval(timerInterval);
     timerInterval = null;
+  }
+  if (autoNextTimeout) {
+    clearTimeout(autoNextTimeout);
+    autoNextTimeout = null;
   }
   document.getElementById("btnPauseResume").innerHTML = `⏸ Jeda`;
 }
