@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Pemilihan Soal TTS Fisika</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="style.css">
@@ -27,17 +27,17 @@
             <svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
           </button>
           <div class="volume-slider-container">
-            <input type="range" id="volumeSlider" min="0" max="100" value="100" class="volume-slider" title="Atur Volume Suara (0 - 100%)" />
-            <span id="volumePercent" class="volume-percent">100%</span>
+            <input type="range" id="volumeSlider" min="0" max="100" value="80" class="volume-slider" title="Atur Volume Suara (0-100%)" />
+            <span id="volumePercent" class="volume-percent">80%</span>
           </div>
         </div>
-        <button id="btnFullscreen" class="btn btn-sm btn-icon-mobile" title="Mode Layar Penuh">
+        <button id="btnFullscreen" class="btn btn-sm" title="Mode Layar Penuh">
           <svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
-          <span class="btn-text">Layar Penuh</span>
+          <span class="btn-label">Layar Penuh</span>
         </button>
-        <button id="btnResetAllProgress" class="btn btn-sm btn-icon-mobile" title="Reset status selesai">
+        <button id="btnResetAllProgress" class="btn btn-sm" title="Reset status selesai">
           <svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
-          <span class="btn-text">Reset</span>
+          <span class="btn-label">Reset</span>
         </button>
       </div>
     </div>

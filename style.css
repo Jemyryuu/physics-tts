@@ -1,4 +1,6 @@
-/* === VARIABEL & DASAR === */
+/* ==========================================================================
+   VARIABEL & DESIGN TOKENS
+   ========================================================================== */
 :root {
   --bg-canvas: #ffffff;
   --bg-surface: #fafafa;
@@ -29,7 +31,7 @@
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
-  --shadow-modal: 0 24px 48px -12px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-modal: 0 24px 48px -12px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.04);
   
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -37,8 +39,16 @@
   --radius-full: 9999px;
   
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
 }
 
+/* ==========================================================================
+   RESET & DASAR
+   ========================================================================== */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -46,8 +56,8 @@
 }
 
 html, body {
-  width: 100%;
   overflow-x: hidden;
+  width: 100%;
 }
 
 body {
@@ -56,10 +66,12 @@ body {
   color: var(--text-primary);
   line-height: 1.5;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .icon {
@@ -68,81 +80,18 @@ body {
   flex-shrink: 0;
 }
 
-/* === HEADER & NAVIGASI === */
-.header {
-  background-color: var(--bg-canvas);
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 0.75rem 1.25rem;
-  position: sticky;
-  top: 0;
-  z-index: 40;
-}
-
-.header-container {
-  max-width: 1140px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-.brand-badge {
-  background: var(--text-primary);
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 0.7rem;
-  padding: 0.15rem 0.45rem;
-  border-radius: var(--radius-sm);
-  letter-spacing: 0.06em;
-}
-
-.brand-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-}
-
-.header-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex-wrap: nowrap;
-}
-
-.progress-capsule {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  background: var(--bg-subtle);
-  padding: 0.3rem 0.65rem;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--border-subtle);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
+/* ==========================================================================
+   TOMBOL & KOMPONEN UMUM
+   ========================================================================== */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
   font-family: inherit;
-  font-size: 0.8rem;
+  font-size: 0.825rem;
   font-weight: 600;
-  padding: 0.4rem 0.75rem;
+  padding: 0.45rem 0.85rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
   background: var(--bg-canvas);
@@ -150,7 +99,9 @@ body {
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
+  -webkit-user-select: none;
   touch-action: manipulation;
+  white-space: nowrap;
 }
 
 .btn:hover {
@@ -159,7 +110,7 @@ body {
 }
 
 .btn:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.98);
 }
 
 .btn-primary {
@@ -174,12 +125,108 @@ body {
   color: #ffffff;
 }
 
-.btn-sm {
-  padding: 0.35rem 0.6rem;
-  font-size: 0.75rem;
+.btn-ghost {
+  border-color: transparent;
+  background: transparent;
 }
 
-/* === KONTROL VOLUME === */
+.btn-ghost:hover {
+  background: var(--bg-surface);
+}
+
+.btn-sm {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.775rem;
+  min-height: 32px;
+}
+
+.btn-lg {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  min-height: 42px;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ==========================================================================
+   HEADER & NAVIGASI ATAS
+   ========================================================================== */
+.header {
+  background-color: var(--bg-canvas);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0.75rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding-top: max(0.75rem, var(--safe-area-top));
+  padding-left: max(1.25rem, var(--safe-area-left));
+  padding-right: max(1.25rem, var(--safe-area-right));
+}
+
+.header-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.brand-badge {
+  background: var(--text-primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.06em;
+}
+
+.brand-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.progress-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  height: 32px;
+}
+
+/* Kontrol Volume */
 .volume-control-wrapper {
   display: inline-flex;
   align-items: center;
@@ -187,9 +234,10 @@ body {
   background: var(--bg-canvas);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 0.2rem 0.45rem;
+  padding: 0.2rem 0.5rem;
   transition: all 0.15s ease;
   user-select: none;
+  height: 32px;
 }
 
 .volume-control-wrapper:hover {
@@ -208,6 +256,7 @@ body {
   justify-content: center;
   border-radius: var(--radius-sm);
   transition: color 0.15s ease;
+  touch-action: manipulation;
 }
 
 .volume-btn:hover {
@@ -259,6 +308,10 @@ body {
   transition: transform 0.1s ease;
 }
 
+.volume-slider::-moz-range-thumb:hover {
+  transform: scale(1.25);
+}
+
 .volume-percent {
   font-size: 0.7rem;
   font-weight: 600;
@@ -268,13 +321,18 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* === FILTER & STATISTIK === */
+/* ==========================================================================
+   KONTEN UTAMA & INFO BAR (FILTER & STATISTIK)
+   ========================================================================== */
 .main-content {
   flex: 1;
   max-width: 1140px;
   width: 100%;
   margin: 0 auto;
-  padding: 1.25rem 1rem 3rem 1rem;
+  padding: 1.5rem 1.25rem 3rem 1.25rem;
+  padding-left: max(1.25rem, var(--safe-area-left));
+  padding-right: max(1.25rem, var(--safe-area-right));
+  padding-bottom: max(3rem, var(--safe-area-bottom));
 }
 
 .info-bar {
@@ -284,7 +342,7 @@ body {
   align-items: center;
   gap: 0.85rem;
   margin-bottom: 1.75rem;
-  padding-bottom: 1rem;
+  padding-bottom: 1.15rem;
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -295,20 +353,12 @@ body {
   padding: 0.25rem;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-subtle);
-  overflow-x: auto;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
   max-width: 100%;
 }
 
-.filter-tabs::-webkit-scrollbar {
-  display: none;
-}
-
 .tab-btn {
-  padding: 0.35rem 0.75rem;
-  font-size: 0.775rem;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.8rem;
   font-weight: 600;
   border: none;
   background: transparent;
@@ -316,8 +366,8 @@ body {
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all 0.15s ease;
-  flex-shrink: 0;
   white-space: nowrap;
+  touch-action: manipulation;
 }
 
 .tab-btn:hover {
@@ -333,8 +383,9 @@ body {
 .stats-legend {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 1rem;
-  font-size: 0.775rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
 }
 
@@ -362,9 +413,11 @@ body {
   background: var(--color-completed);
 }
 
-/* === GRID SOAL & KARTU === */
+/* ==========================================================================
+   GRID SOAL & KARTU
+   ========================================================================== */
 .round-section {
-  margin-bottom: 2rem;
+  margin-bottom: 2.25rem;
 }
 
 .round-heading {
@@ -372,10 +425,11 @@ body {
   align-items: baseline;
   justify-content: space-between;
   margin-bottom: 0.85rem;
+  gap: 0.5rem;
 }
 
 .round-title {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.01em;
@@ -386,19 +440,20 @@ body {
   color: var(--text-muted);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .questions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .question-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 1rem 0.6rem 0.85rem 0.6rem;
+  padding: 1.1rem 0.65rem 0.9rem 0.65rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
@@ -406,7 +461,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   position: relative;
   user-select: none;
   box-shadow: var(--shadow-xs);
@@ -421,7 +476,7 @@ body {
 }
 
 .question-card:active {
-  transform: translateY(0);
+  transform: scale(0.97);
 }
 
 .card-number {
@@ -439,8 +494,9 @@ body {
   gap: 0.25rem;
   font-size: 0.675rem;
   font-weight: 600;
-  padding: 0.15rem 0.4rem;
+  padding: 0.2rem 0.45rem;
   border-radius: var(--radius-full);
+  white-space: nowrap;
 }
 
 .badge-mendatar {
@@ -487,18 +543,21 @@ body {
   justify-content: center;
 }
 
-/* === MODAL & DISPLAY SOAL === */
+/* ==========================================================================
+   MODAL DISPLAY SOAL
+   ========================================================================== */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(9, 9, 11, 0.5);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(9, 9, 11, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 100;
   display: none;
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  overflow-y: auto;
 }
 
 .modal-backdrop.active {
@@ -511,8 +570,9 @@ body {
   box-shadow: var(--shadow-modal);
   border: 1px solid var(--border-subtle);
   width: 100%;
-  max-width: 760px;
-  max-height: 94vh;
+  max-width: 780px;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -537,7 +597,7 @@ body {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-canvas);
-  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .modal-header-meta {
@@ -548,7 +608,7 @@ body {
 }
 
 .modal-round-tag {
-  font-size: 0.775rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-secondary);
   background: var(--bg-subtle);
@@ -558,7 +618,7 @@ body {
 }
 
 .modal-number-title {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -569,7 +629,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.775rem;
+  font-size: 0.75rem;
   font-weight: 700;
   padding: 0.2rem 0.55rem;
   border-radius: var(--radius-full);
@@ -593,8 +653,8 @@ body {
   font-size: 1.1rem;
   background: none;
   border: 1px solid transparent;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: flex;
@@ -603,6 +663,7 @@ body {
   color: var(--text-secondary);
   transition: all 0.15s ease;
   flex-shrink: 0;
+  touch-action: manipulation;
 }
 
 .modal-close-btn:hover {
@@ -617,13 +678,14 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
+  min-height: 180px;
   text-align: center;
+  flex: 1;
 }
 
 .clue-stage {
   width: 100%;
-  max-width: 640px;
+  max-width: 660px;
   margin: 0 auto;
 }
 
@@ -642,17 +704,18 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.825rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-secondary);
   background: var(--bg-subtle);
   padding: 0.35rem 0.8rem;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-subtle);
+  white-space: nowrap;
 }
 
 .transition-pulse-text {
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: -0.01em;
@@ -660,22 +723,23 @@ body {
 
 .clue-text-view {
   display: none;
-  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+  font-size: 1.75rem;
   font-weight: 600;
   line-height: 1.45;
   color: var(--text-primary);
   letter-spacing: -0.02em;
+  word-break: break-word;
 }
 
 .clue-text-view.active {
   display: block;
-  animation: revealQuestion 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: revealQuestion 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes revealQuestion {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -683,7 +747,9 @@ body {
   }
 }
 
-/* === TIMER & PROGRESS BAR === */
+/* ==========================================================================
+   TIMER SECTION & KONTROL
+   ========================================================================== */
 .timer-section {
   width: 100%;
   border-top: 1px solid var(--border-subtle);
@@ -693,6 +759,7 @@ body {
   align-items: center;
   gap: 0.75rem;
   background: var(--bg-surface);
+  flex-shrink: 0;
 }
 
 .timer-readout-row {
@@ -702,7 +769,7 @@ body {
 }
 
 .timer-number {
-  font-size: 2.1rem;
+  font-size: 2.15rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -726,7 +793,7 @@ body {
 
 .timer-progress-track {
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   height: 4px;
   background: #e4e4e7;
   border-radius: var(--radius-full);
@@ -755,7 +822,6 @@ body {
   background: var(--accent-danger);
 }
 
-/* === KONTROL & FOOTER MODAL === */
 .timer-controls {
   display: flex;
   flex-wrap: wrap;
@@ -765,14 +831,19 @@ body {
   width: 100%;
 }
 
+/* ==========================================================================
+   FOOTER MODAL
+   ========================================================================== */
 .modal-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 0.65rem;
   padding: 0.85rem 1.5rem;
   border-top: 1px solid var(--border-subtle);
   background: var(--bg-canvas);
+  flex-shrink: 0;
 }
 
 .nav-buttons-group {
@@ -785,25 +856,41 @@ body {
   gap: 0.4rem;
 }
 
-/* === MODAL RONDE SELESAI === */
+/* ==========================================================================
+   MODAL RONDE SELESAI
+   ========================================================================== */
 .round-complete-modal {
   background: var(--bg-canvas);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
   border: 1px solid var(--border-subtle);
   width: 100%;
-  max-width: 460px;
-  padding: 2rem 1.5rem;
+  max-width: 480px;
+  padding: 2rem 1.75rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: modalEnter 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .round-complete-icon-wrapper {
-  width: 62px;
-  height: 62px;
+  width: 64px;
+  height: 64px;
   border-radius: var(--radius-full);
   background: var(--accent-mendatar-bg);
   color: var(--accent-mendatar);
@@ -811,7 +898,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
+  flex-shrink: 0;
 }
 
 .round-complete-badge {
@@ -840,15 +928,15 @@ body {
   color: var(--text-secondary);
   line-height: 1.45;
   margin-bottom: 1.25rem;
-  max-width: 360px;
+  max-width: 380px;
 }
 
 .round-complete-stats {
   display: flex;
   gap: 0.65rem;
   width: 100%;
-  max-width: 330px;
-  margin-bottom: 1.25rem;
+  max-width: 340px;
+  margin-bottom: 1.35rem;
 }
 
 .stat-box {
@@ -856,7 +944,7 @@ body {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 0.65rem 0.4rem;
+  padding: 0.75rem 0.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -881,33 +969,29 @@ body {
   flex-direction: column;
   gap: 0.45rem;
   width: 100%;
-  max-width: 330px;
+  max-width: 340px;
 }
 
-.btn-lg {
-  padding: 0.55rem 1rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-/* === NOTIFIKASI TOAST === */
+/* ==========================================================================
+   NOTIFIKASI TOAST & FOOTER
+   ========================================================================== */
 .toast {
   position: fixed;
-  bottom: 1.5rem;
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
   background: var(--text-primary);
   color: #ffffff;
-  padding: 0.5rem 1rem;
+  padding: 0.55rem 1.15rem;
   border-radius: var(--radius-full);
-  font-size: 0.8rem;
+  font-size: 0.825rem;
   font-weight: 600;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
   opacity: 0;
   pointer-events: none;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 200;
-  max-width: 90%;
+  max-width: calc(100vw - 2rem);
   text-align: center;
 }
 
@@ -916,109 +1000,131 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
-/* === FOOTER HALAMAN === */
 .footer {
   border-top: 1px solid var(--border-subtle);
-  padding: 1.25rem 1rem;
+  padding: 1.25rem 1.5rem;
   text-align: center;
-  font-size: 0.75rem;
+  font-size: 0.775rem;
   color: var(--text-muted);
   background: var(--bg-canvas);
+  margin-top: auto;
 }
 
-/* =========================================================
-   === RESPONSIVE MEDIA QUERIES (TABLET & SMARTPHONE) ===
-   ========================================================= */
+/* ==========================================================================
+   RESPONSIVE DESIGN: MEDIA QUERIES
+   ========================================================================== */
 
-/* Tablet & Mobile Kecil (< 768px) */
+/* --- TABLET / LAYAR MENENGAH (<= 768px) --- */
 @media (max-width: 768px) {
-  .header {
-    padding: 0.6rem 0.85rem;
-  }
-  
-  .brand-title {
-    font-size: 0.95rem;
+  .main-content {
+    padding: 1.25rem 1rem 2.5rem 1rem;
   }
 
-  .btn-icon-mobile .btn-text {
+  .info-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Horizontal smooth scrollable chips for tabs */
+  .filter-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0.25rem;
+    border-radius: var(--radius-full);
+    width: 100%;
+  }
+
+  .filter-tabs::-webkit-scrollbar {
     display: none;
   }
 
-  .btn-icon-mobile {
-    padding: 0.35rem 0.5rem;
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.775rem;
   }
 
-  .questions-grid {
-    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
-    gap: 0.55rem;
+  .stats-legend {
+    justify-content: center;
+    gap: 0.85rem;
+    font-size: 0.75rem;
   }
 
-  .main-content {
-    padding: 1rem 0.75rem 2.5rem 0.75rem;
+  .clue-text-view {
+    font-size: 1.45rem;
   }
 }
 
-/* Smartphone Utama (< 540px) */
-@media (max-width: 540px) {
+/* --- MOBILE STANDAR (<= 580px) --- */
+@media (max-width: 580px) {
+  .header {
+    padding: 0.6rem 0.75rem;
+  }
+
   .header-container {
-    gap: 0.35rem;
+    gap: 0.45rem;
+  }
+
+  .brand-title {
+    font-size: 1rem;
   }
 
   .brand-badge {
-    display: none;
-  }
-
-  .brand-title {
-    font-size: 0.9rem;
+    font-size: 0.65rem;
+    padding: 0.15rem 0.4rem;
   }
 
   .header-controls {
-    gap: 0.25rem;
+    gap: 0.35rem;
   }
 
   .progress-capsule {
-    font-size: 0.7rem;
-    padding: 0.25rem 0.45rem;
+    font-size: 0.725rem;
+    padding: 0.25rem 0.5rem;
+    height: 30px;
   }
 
   .volume-control-wrapper {
     padding: 0.15rem 0.35rem;
     gap: 0.2rem;
+    height: 30px;
   }
 
   .volume-slider {
-    width: 40px;
+    width: 42px;
   }
 
   .volume-percent {
+    font-size: 0.65rem;
+    min-width: 22px;
+  }
+
+  /* Sembunyikan label teks tombol header di HP agar tidak meluap */
+  .header-controls .btn-label {
     display: none;
   }
 
-  /* Info Bar & Filter Tabs */
-  .info-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.65rem;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.75rem;
+  .header-controls .btn-sm {
+    padding: 0.35rem 0.45rem;
+    min-width: 32px;
+    height: 30px;
   }
 
-  .stats-legend {
-    justify-content: flex-start;
-    gap: 0.85rem;
-    font-size: 0.725rem;
-  }
-
-  /* 3 Kolom Rapi untuk Soal */
+  /* Grid Kartu Soal 3-Kolom yang rapi di HP */
   .questions-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 0.45rem;
   }
 
   .question-card {
-    padding: 0.75rem 0.35rem 0.65rem 0.35rem;
+    padding: 0.75rem 0.3rem 0.65rem 0.3rem;
+    gap: 0.35rem;
     border-radius: var(--radius-sm);
-    gap: 0.3rem;
   }
 
   .card-number {
@@ -1027,10 +1133,11 @@ body {
 
   .card-badge {
     font-size: 0.625rem;
-    padding: 0.1rem 0.3rem;
+    padding: 0.15rem 0.35rem;
+    gap: 0.15rem;
   }
 
-  .card-badge .icon {
+  .card-badge svg {
     width: 10px;
     height: 10px;
   }
@@ -1045,13 +1152,30 @@ body {
     height: 12px;
   }
 
-  /* Modal Dialog */
+  .round-section {
+    margin-bottom: 1.75rem;
+  }
+
+  .round-heading {
+    margin-bottom: 0.65rem;
+  }
+
+  .round-title {
+    font-size: 0.95rem;
+  }
+
+  .round-subtitle {
+    font-size: 0.725rem;
+  }
+
+  /* Modal Tampilan Soal di Mobile */
   .modal-backdrop {
     padding: 0.5rem;
   }
 
   .question-modal {
-    max-height: 96vh;
+    max-height: calc(100vh - 1rem);
+    max-height: calc(100dvh - 1rem);
     border-radius: var(--radius-md);
   }
 
@@ -1064,7 +1188,7 @@ body {
   }
 
   .modal-round-tag {
-    font-size: 0.7rem;
+    font-size: 0.675rem;
     padding: 0.15rem 0.4rem;
   }
 
@@ -1073,13 +1197,18 @@ body {
   }
 
   .modal-direction-pill {
-    font-size: 0.7rem;
+    font-size: 0.675rem;
     padding: 0.15rem 0.45rem;
   }
 
+  .modal-close-btn {
+    width: 32px;
+    height: 32px;
+  }
+
   .modal-body {
-    padding: 1.25rem 0.75rem;
-    min-height: 140px;
+    padding: 1.25rem 0.85rem;
+    min-height: 120px;
   }
 
   .clue-text-view {
@@ -1088,7 +1217,12 @@ body {
   }
 
   .transition-pulse-text {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
+  }
+
+  .transition-countdown-badge {
+    font-size: 0.725rem;
+    padding: 0.25rem 0.6rem;
   }
 
   .timer-section {
@@ -1100,55 +1234,75 @@ body {
     font-size: 1.75rem;
   }
 
-  /* 2x2 Grid untuk Tombol Kontrol Timer */
+  .timer-unit {
+    font-size: 0.75rem;
+  }
+
+  .timer-state-label {
+    font-size: 0.65rem;
+  }
+
+  .timer-progress-track {
+    max-width: 100%;
+    height: 4px;
+  }
+
+  /* Kontrol Timer 2x2 Grid di Mobile */
   .timer-controls {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.35rem;
-    max-width: 320px;
     width: 100%;
   }
 
   .timer-controls .btn {
     width: 100%;
-    padding: 0.4rem 0.35rem;
-    font-size: 0.725rem;
+    padding: 0.45rem 0.35rem;
+    font-size: 0.75rem;
     gap: 0.25rem;
-    justify-content: center;
   }
 
-  /* Modal Footer */
+  /* Footer Modal 2-Baris Grid di Mobile */
   .modal-footer {
-    flex-direction: column;
     padding: 0.65rem 0.85rem;
-    gap: 0.45rem;
+    gap: 0.35rem;
+    flex-direction: column;
   }
 
-  .nav-buttons-group,
+  .nav-buttons-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+    width: 100%;
+  }
+
+  .nav-buttons-group .btn {
+    width: 100%;
+    padding: 0.45rem 0.35rem;
+    font-size: 0.75rem;
+  }
+
   .status-buttons-group {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    width: 100%;
+    grid-template-columns: 1fr 1fr;
     gap: 0.35rem;
-  }
-
-  .modal-footer .btn {
     width: 100%;
-    justify-content: center;
-    padding: 0.45rem 0.4rem;
-    font-size: 0.75rem;
-    min-height: 36px;
   }
 
-  /* Round Complete Modal */
+  .status-buttons-group .btn {
+    width: 100%;
+    padding: 0.45rem 0.35rem;
+    font-size: 0.75rem;
+  }
+
+  /* Modal Ronde Selesai di Mobile */
   .round-complete-modal {
-    padding: 1.35rem 0.85rem;
-    border-radius: var(--radius-md);
+    padding: 1.35rem 1rem;
   }
 
   .round-complete-icon-wrapper {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     margin-bottom: 0.75rem;
   }
 
@@ -1157,22 +1311,27 @@ body {
     height: 28px;
   }
 
+  .round-complete-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+  }
+
   .round-complete-title {
     font-size: 1.15rem;
   }
 
   .round-complete-desc {
-    font-size: 0.775rem;
+    font-size: 0.8rem;
     margin-bottom: 1rem;
   }
 
   .round-complete-stats {
-    gap: 0.45rem;
-    margin-bottom: 1rem;
+    gap: 0.5rem;
+    margin-bottom: 1.15rem;
   }
 
   .stat-box {
-    padding: 0.5rem 0.3rem;
+    padding: 0.55rem 0.35rem;
   }
 
   .stat-number {
@@ -1183,30 +1342,41 @@ body {
     font-size: 0.65rem;
   }
 
+  .round-complete-actions {
+    gap: 0.35rem;
+    width: 100%;
+  }
+
   .round-complete-actions .btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.775rem;
-    min-height: 38px;
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .toast {
+    bottom: 1.25rem;
+    font-size: 0.75rem;
+    padding: 0.45rem 0.95rem;
   }
 }
 
-/* Smartphone Layar Sangat Kecil (< 360px) */
-@media (max-width: 360px) {
+/* --- MOBILE SANGAT KECIL (<= 340px) --- */
+@media (max-width: 340px) {
   .questions-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.3rem;
-  }
-
-  .card-number {
-    font-size: 1.15rem;
-  }
-
-  .card-badge {
-    font-size: 0.575rem;
-    padding: 0.1rem 0.2rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
   }
 
   .brand-title {
-    font-size: 0.825rem;
+    font-size: 0.925rem;
+  }
+
+  .header-controls {
+    gap: 0.25rem;
+  }
+
+  .stats-legend {
+    font-size: 0.7rem;
+    gap: 0.6rem;
   }
 }

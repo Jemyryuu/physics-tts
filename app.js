@@ -12,7 +12,7 @@ let timeRemaining = QUESTION_DURATION;
 let timerInterval = null;
 let autoNextTimeout = null;
 let soundEnabled = true;
-let soundVolume = 1.0; // Nilai 0.0 - 1.0 (default 100%)
+let soundVolume = 0.8; // Nilai 0.0 - 1.0 (default 80%)
 
 const SVG_ICONS = {
   mendatar: `<svg class="icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`,
@@ -26,10 +26,8 @@ const SVG_ICONS = {
   volumeOff: `<svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
 };
 
-// === AUDIO SYNTHESIZER & VOLUME CONTROL TINGGI (PRE-AMP & COMPRESSOR) ===
+// === AUDIO SYNTHESIZER & VOLUME CONTROL ===
 let audioCtx = null;
-let masterGainNode = null;
-let compressorNode = null;
 let volumeTestTimeout = null;
 
 function getAudioContext() {
@@ -37,22 +35,6 @@ function getAudioContext() {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (AudioContext) {
       audioCtx = new AudioContext();
-
-      // Master Dynamics Compressor to amplify perceived acoustic loudness and eliminate distortion
-      compressorNode = audioCtx.createDynamicsCompressor();
-      compressorNode.threshold.setValueAtTime(-20, audioCtx.currentTime);
-      compressorNode.knee.setValueAtTime(25, audioCtx.currentTime);
-      compressorNode.ratio.setValueAtTime(14, audioCtx.currentTime);
-      compressorNode.attack.setValueAtTime(0.002, audioCtx.currentTime);
-      compressorNode.release.setValueAtTime(0.18, audioCtx.currentTime);
-
-      // Master Pre-Amp Gain Node (amplified boost)
-      masterGainNode = audioCtx.createGain();
-      const initialGain = soundEnabled ? soundVolume * 2.2 : 0;
-      masterGainNode.gain.setValueAtTime(initialGain, audioCtx.currentTime);
-
-      masterGainNode.connect(compressorNode);
-      compressorNode.connect(audioCtx.destination);
     }
   }
   if (audioCtx && audioCtx.state === "suspended") {
@@ -70,12 +52,6 @@ function setVolume(volume, isUserInput = false) {
   } else {
     soundEnabled = true;
   }
-
-  const ctx = getAudioContext();
-  if (masterGainNode && ctx) {
-    const targetGain = soundEnabled ? soundVolume * 2.2 : 0;
-    masterGainNode.gain.setValueAtTime(targetGain, ctx.currentTime);
-  }
   
   saveAudioSettings();
   updateVolumeUI();
@@ -88,25 +64,18 @@ function setVolume(volume, isUserInput = false) {
 function playVolumeTestTone() {
   if (volumeTestTimeout) clearTimeout(volumeTestTimeout);
   volumeTestTimeout = setTimeout(() => {
-    playTone(587.33, "triangle", 0.16, 0.95, true);
-  }, 60);
+    playBeep(587.33, "triangle", 0.12, 0.35);
+  }, 100);
 }
 
 function toggleSoundMute() {
-  const ctx = getAudioContext();
   if (soundEnabled && soundVolume > 0) {
     soundEnabled = false;
-    if (masterGainNode && ctx) {
-      masterGainNode.gain.setValueAtTime(0, ctx.currentTime);
-    }
     showToast("Suara dimatikan (Mute)");
   } else {
     soundEnabled = true;
     if (soundVolume === 0) {
-      soundVolume = 1.0;
-    }
-    if (masterGainNode && ctx) {
-      masterGainNode.gain.setValueAtTime(soundVolume * 2.2, ctx.currentTime);
+      soundVolume = 0.8;
     }
     showToast(`Suara diaktifkan (${Math.round(soundVolume * 100)}%)`);
     playVolumeTestTone();
@@ -138,61 +107,33 @@ function updateVolumeUI() {
   }
 }
 
-function playTone(freq = 440, type = "triangle", duration = 0.2, gainVal = 0.95, addHarmonic = true) {
+function playBeep(freq = 440, type = "sine", duration = 0.15, gainVal = 0.35) {
   if (!soundEnabled || soundVolume <= 0) return;
   try {
     const ctx = getAudioContext();
-    if (!ctx || !masterGainNode) return;
-    
-    const now = ctx.currentTime;
-    
-    // Main Oscillator
+    if (!ctx) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     
     osc.type = type;
-    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
     
-    // High-impact envelope: rapid punchy attack, solid sustain, fast release
-    gain.gain.setValueAtTime(0.001, now);
-    gain.gain.linearRampToValueAtTime(gainVal, now + 0.012);
-    gain.gain.setValueAtTime(gainVal, now + duration * 0.75);
-    gain.gain.linearRampToValueAtTime(0.001, now + duration);
+    const effectiveGain = Math.min(0.95, gainVal * soundVolume);
+    gain.gain.setValueAtTime(effectiveGain, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
     
     osc.connect(gain);
-    gain.connect(masterGainNode);
+    gain.connect(ctx.destination);
     
-    osc.start(now);
-    osc.stop(now + duration);
-
-    // Harmonic Layer for high acoustic presence
-    if (addHarmonic) {
-      const osc2 = ctx.createOscillator();
-      const gain2 = ctx.createGain();
-      osc2.type = "sine";
-      osc2.frequency.setValueAtTime(freq * 2, now);
-      gain2.gain.setValueAtTime(0.001, now);
-      gain2.gain.linearRampToValueAtTime(gainVal * 0.45, now + 0.012);
-      gain2.gain.setValueAtTime(gainVal * 0.45, now + duration * 0.7);
-      gain2.gain.linearRampToValueAtTime(0.001, now + duration);
-      
-      osc2.connect(gain2);
-      gain2.connect(masterGainNode);
-      
-      osc2.start(now);
-      osc2.stop(now + duration);
-    }
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
   } catch (e) {
     console.warn("Audio play error", e);
   }
 }
 
-function playBeep(freq = 440, type = "triangle", duration = 0.15, gainVal = 0.95) {
-  playTone(freq, type, duration, gainVal, true);
-}
-
 function playTransitionBeep() {
-  playTone(650, "sine", 0.1, 0.95, true);
+  playBeep(520, "sine", 0.08, 0.28);
 }
 
 function playStartChime() {
@@ -202,14 +143,14 @@ function playStartChime() {
     if (!ctx) return;
     [523.25, 659.25, 783.99].forEach((freq, idx) => {
       setTimeout(() => {
-        playTone(freq, "triangle", 0.32, 0.95, true);
-      }, idx * 95);
+        playBeep(freq, "triangle", 0.25, 0.38);
+      }, idx * 90);
     });
   } catch (e) {}
 }
 
 function playUrgentBeep() {
-  playTone(950, "square", 0.12, 0.85, false);
+  playBeep(880, "square", 0.1, 0.28);
 }
 
 function playTimesUpBuzzer() {
@@ -217,10 +158,10 @@ function playTimesUpBuzzer() {
   try {
     const ctx = getAudioContext();
     if (!ctx) return;
-    [360, 270, 180].forEach((freq, idx) => {
+    [300, 250, 200].forEach((freq, idx) => {
       setTimeout(() => {
-        playTone(freq, "sawtooth", 0.38, 1.0, true);
-      }, idx * 120);
+        playBeep(freq, "sawtooth", 0.35, 0.45);
+      }, idx * 130);
     });
   } catch (e) {}
 }
@@ -412,7 +353,17 @@ function openQuestionModal(questionNumber) {
   startTransitionTimer();
 }
 
+function markQuestionCompleted(questionNumber) {
+  if (!completedQuestions.has(questionNumber)) {
+    completedQuestions.add(questionNumber);
+    saveCompletedQuestions();
+    updateModalCompletedBtn();
+    updateProgressStats();
+  }
+}
+
 function updateModalCompletedBtn() {
+  if (currentQuestionIndex === null || !QUESTIONS_DATA[currentQuestionIndex]) return;
   const q = QUESTIONS_DATA[currentQuestionIndex];
   const isCompleted = completedQuestions.has(q.number);
   const btn = document.getElementById("btnToggleCompleted");
@@ -502,37 +453,24 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
       playTimesUpBuzzer();
       updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS");
 
-      // Otomatis tandai soal selesai saat waktu habis
-      markCurrentQuestionCompleted();
-
       const q = QUESTIONS_DATA[currentQuestionIndex];
+      markQuestionCompleted(q.number);
+
       if (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50) {
-        showToast(`Waktu habis. ${q.roundName || ('Ronde ' + q.round)} selesai!`);
+        showToast(`Waktu habis. Soal no. ${q.number} selesai! ${q.roundName || ('Ronde ' + q.round)} selesai!`);
         autoNextTimeout = setTimeout(() => {
           showRoundCompleteScreen(q.round);
         }, 1200);
       } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
-        showToast("Waktu habis. Soal ditandai selesai.");
+        showToast(`Waktu habis. Soal no. ${q.number} selesai. Beralih ke soal berikutnya...`);
         autoNextTimeout = setTimeout(() => {
           openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
         }, 1200);
       } else {
-        showToast("Waktu habis. Seluruh soal telah selesai.");
+        showToast(`Waktu habis. Soal no. ${q.number} selesai. Seluruh soal telah selesai.`);
       }
     }
   }, 1000);
-}
-
-function markCurrentQuestionCompleted() {
-  if (currentQuestionIndex !== null) {
-    const q = QUESTIONS_DATA[currentQuestionIndex];
-    if (q && !completedQuestions.has(q.number)) {
-      completedQuestions.add(q.number);
-      saveCompletedQuestions();
-      updateModalCompletedBtn();
-      updateProgressStats();
-    }
-  }
 }
 
 function pauseOrResumeTimer() {
@@ -580,22 +518,21 @@ function skipQuestionTimer() {
   playTimesUpBuzzer();
   updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS");
 
-  // Otomatis tandai soal selesai saat dilewati
-  markCurrentQuestionCompleted();
-
   const q = QUESTIONS_DATA[currentQuestionIndex];
+  markQuestionCompleted(q.number);
+
   if (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50) {
-    showToast(`Timer dilewati. ${q.roundName || ('Ronde ' + q.round)} selesai!`);
+    showToast(`Timer soal dilewati. Soal no. ${q.number} selesai! ${q.roundName || ('Ronde ' + q.round)} selesai!`);
     autoNextTimeout = setTimeout(() => {
       showRoundCompleteScreen(q.round);
     }, 800);
   } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
-    showToast("Soal dilewati dan ditandai selesai.");
+    showToast(`Timer soal dilewati. Soal no. ${q.number} selesai. Beralih ke soal berikutnya...`);
     autoNextTimeout = setTimeout(() => {
       openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
     }, 800);
   } else {
-    showToast("Timer soal dilewati. Seluruh soal telah selesai.");
+    showToast(`Timer soal dilewati. Soal no. ${q.number} selesai. Seluruh soal telah selesai.`);
   }
 }
 
@@ -710,7 +647,7 @@ function playCelebrationChime() {
     if (!ctx) return;
     [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
       setTimeout(() => {
-        playTone(freq, "triangle", 0.38, 1.0, true);
+        playBeep(freq, "triangle", 0.35, 0.4);
       }, idx * 110);
     });
   } catch (e) {}
