@@ -181,18 +181,17 @@ body {
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.65rem;
   flex-shrink: 0;
 }
 
-.brand-badge {
-  background: var(--text-primary);
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 0.7rem;
-  padding: 0.2rem 0.45rem;
+.brand-logo {
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-sm);
-  letter-spacing: 0.06em;
+  display: block;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-xs);
 }
 
 .brand-text-group {
@@ -1127,9 +1126,10 @@ body {
     font-size: 0.625rem;
   }
 
-  .brand-badge {
-    font-size: 0.625rem;
-    padding: 0.15rem 0.35rem;
+  .brand-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
   }
 
   .header-controls {
