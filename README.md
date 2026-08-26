@@ -17,12 +17,14 @@ Website interaktif dan minimalis untuk pemilihan soal kuis Teka-Teki Silang (TTS
 - **Timer & Transisi:**
   - **Transisi 5 Detik:** Hitung mundur persiapan sebelum waktu pengerjaan soal dimulai.
   - **Waktu Menjawab 45 Detik:** Hitung mundur dengan indikator progres bar dan perubahan warna otomatis saat waktu menipis.
-- **Efek Suara Sintetis (Web Audio API):** Bip transisi, denting mulai, alarm 10 detik terakhir, dan bel waktu habis (bisa diaktifkan/dinonaktifkan).
+- **Efek Suara Sintetis (Web Audio API) & Pengatur Volume:** Bip transisi, denting mulai, alarm 10 detik terakhir, dan bel waktu habis dengan slider volume interaktif (0–100%) dan tombol mute/unmute yang tersimpan otomatis.
 - **Penanda Status Soal:** Tandai soal yang sudah selesai agar tidak terpilih dua kali.
 - **Dukungan Pintasan Keyboard:**
   - `Spasi` : Jeda / Lanjut Timer
   - `R` : Ulangi Timer
   - `S` : Lewati Transisi 5 Detik
+  - `T` / `K` : Lewati Timer Soal 45 Detik
+  - `M` : Mute / Unmute Suara
   - `←` / `→` : Navigasi Soal Sebelumnya / Selanjutnya
   - `Esc` : Kembali ke Daftar Soal
 
