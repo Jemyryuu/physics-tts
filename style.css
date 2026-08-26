@@ -505,6 +505,7 @@ body {
   padding: 2rem;
   text-align: center;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .clue-box.mendatar-accent {
@@ -515,6 +516,18 @@ body {
   border-top: 5px solid var(--color-menurun);
 }
 
+.clue-box.is-transitioning {
+  background: #f8fafc;
+  border-style: dashed;
+}
+
+.clue-box.is-transitioning .clue-text {
+  color: var(--text-secondary);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
 .clue-label {
   font-size: 0.8rem;
   font-weight: 700;
@@ -522,6 +535,11 @@ body {
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 0.75rem;
+  transition: color 0.2s ease;
+}
+
+.clue-box.is-transitioning .clue-label {
+  color: #b45309;
 }
 
 .clue-text {
@@ -533,9 +551,27 @@ body {
   margin: 0 auto;
 }
 
+.clue-text.reveal-anim {
+  animation: revealQuestion 0.35s ease-out;
+}
+
+@keyframes revealQuestion {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 640px) {
   .clue-text {
     font-size: 1.25rem;
+  }
+  .clue-box.is-transitioning .clue-text {
+    font-size: 1.15rem;
   }
 }
 

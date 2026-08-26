@@ -233,10 +233,6 @@ function openQuestionModal(questionNumber) {
   dirPill.className = `modal-direction-pill ${q.type}`;
   dirPill.innerHTML = q.type === "mendatar" ? `➡ MENDATAR` : `⬇ MENURUN`;
 
-  const clueBox = document.getElementById("modalClueBox");
-  clueBox.className = `clue-box ${q.type}-accent`;
-  document.getElementById("modalClueText").textContent = q.text;
-
   updateModalCompletedBtn();
   updateModalNavButtons();
 
@@ -280,7 +276,13 @@ function startTransitionTimer() {
   stopTimer();
   timerState = "TRANSITION";
 
+  const q = QUESTIONS_DATA[currentQuestionIndex];
+  const clueBox = document.getElementById("modalClueBox");
+  clueBox.className = `clue-box ${q.type}-accent is-transitioning`;
+  document.getElementById("modalClueLabel").textContent = "STATUS: PERSIAPAN";
+
   let transitionSec = TRANSITION_DURATION;
+  document.getElementById("modalClueText").textContent = `⏳ Bersiap! Soal akan ditampilkan dalam ${transitionSec} detik...`;
   updateTimerUI(transitionSec, TRANSITION_DURATION, "Transisi Soal");
   showTransitionBanner(true, `Bersiap! Soal dimulai dalam ${transitionSec} detik...`);
   playTransitionBeep();
@@ -288,6 +290,7 @@ function startTransitionTimer() {
   timerInterval = setInterval(() => {
     transitionSec--;
     if (transitionSec > 0) {
+      document.getElementById("modalClueText").textContent = `⏳ Bersiap! Soal akan ditampilkan dalam ${transitionSec} detik...`;
       updateTimerUI(transitionSec, TRANSITION_DURATION, "Transisi Soal");
       showTransitionBanner(true, `Bersiap! Soal dimulai dalam ${transitionSec} detik...`);
       playTransitionBeep();
@@ -302,6 +305,17 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
   stopTimer();
   timerState = "QUESTION";
   timeRemaining = startFrom;
+
+  const q = QUESTIONS_DATA[currentQuestionIndex];
+  const clueBox = document.getElementById("modalClueBox");
+  clueBox.className = `clue-box ${q.type}-accent`;
+  document.getElementById("modalClueLabel").textContent = "PETUNJUK / PERTANYAAN";
+  
+  const clueTextEl = document.getElementById("modalClueText");
+  clueTextEl.textContent = q.text;
+  clueTextEl.classList.remove("reveal-anim");
+  void clueTextEl.offsetWidth;
+  clueTextEl.classList.add("reveal-anim");
 
   showTransitionBanner(false);
   updateTimerUI(timeRemaining, QUESTION_DURATION, "Waktu Menjawab");
