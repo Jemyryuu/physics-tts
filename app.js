@@ -12,7 +12,7 @@ let timeRemaining = QUESTION_DURATION;
 let timerInterval = null;
 let autoNextTimeout = null;
 let soundEnabled = true;
-let soundVolume = 0.8; // Nilai 0.0 - 1.0 (default 80%)
+let soundVolume = 1.0; // Nilai 0.0 - 1.0 (default 100%)
 
 const SVG_ICONS = {
   mendatar: `<svg class="icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`,
@@ -26,8 +26,10 @@ const SVG_ICONS = {
   volumeOff: `<svg class="icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
 };
 
-// === AUDIO SYNTHESIZER & VOLUME CONTROL ===
+// === AUDIO SYNTHESIZER & VOLUME CONTROL TINGGI (PRE-AMP & COMPRESSOR) ===
 let audioCtx = null;
+let masterGainNode = null;
+let compressorNode = null;
 let volumeTestTimeout = null;
 
 function getAudioContext() {
@@ -35,6 +37,22 @@ function getAudioContext() {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (AudioContext) {
       audioCtx = new AudioContext();
+
+      // Master Dynamics Compressor to amplify perceived acoustic loudness and eliminate distortion
+      compressorNode = audioCtx.createDynamicsCompressor();
+      compressorNode.threshold.setValueAtTime(-20, audioCtx.currentTime);
+      compressorNode.knee.setValueAtTime(25, audioCtx.currentTime);
+      compressorNode.ratio.setValueAtTime(14, audioCtx.currentTime);
+      compressorNode.attack.setValueAtTime(0.002, audioCtx.currentTime);
+      compressorNode.release.setValueAtTime(0.18, audioCtx.currentTime);
+
+      // Master Pre-Amp Gain Node (amplified boost)
+      masterGainNode = audioCtx.createGain();
+      const initialGain = soundEnabled ? soundVolume * 2.2 : 0;
+      masterGainNode.gain.setValueAtTime(initialGain, audioCtx.currentTime);
+
+      masterGainNode.connect(compressorNode);
+      compressorNode.connect(audioCtx.destination);
     }
   }
   if (audioCtx && audioCtx.state === "suspended") {
@@ -52,6 +70,12 @@ function setVolume(volume, isUserInput = false) {
   } else {
     soundEnabled = true;
   }
+
+  const ctx = getAudioContext();
+  if (masterGainNode && ctx) {
+    const targetGain = soundEnabled ? soundVolume * 2.2 : 0;
+    masterGainNode.gain.setValueAtTime(targetGain, ctx.currentTime);
+  }
   
   saveAudioSettings();
   updateVolumeUI();
@@ -64,18 +88,25 @@ function setVolume(volume, isUserInput = false) {
 function playVolumeTestTone() {
   if (volumeTestTimeout) clearTimeout(volumeTestTimeout);
   volumeTestTimeout = setTimeout(() => {
-    playBeep(587.33, "triangle", 0.12, 0.35);
-  }, 100);
+    playTone(587.33, "triangle", 0.16, 0.95, true);
+  }, 60);
 }
 
 function toggleSoundMute() {
+  const ctx = getAudioContext();
   if (soundEnabled && soundVolume > 0) {
     soundEnabled = false;
+    if (masterGainNode && ctx) {
+      masterGainNode.gain.setValueAtTime(0, ctx.currentTime);
+    }
     showToast("Suara dimatikan (Mute)");
   } else {
     soundEnabled = true;
     if (soundVolume === 0) {
-      soundVolume = 0.8;
+      soundVolume = 1.0;
+    }
+    if (masterGainNode && ctx) {
+      masterGainNode.gain.setValueAtTime(soundVolume * 2.2, ctx.currentTime);
     }
     showToast(`Suara diaktifkan (${Math.round(soundVolume * 100)}%)`);
     playVolumeTestTone();
@@ -107,33 +138,61 @@ function updateVolumeUI() {
   }
 }
 
-function playBeep(freq = 440, type = "sine", duration = 0.15, gainVal = 0.35) {
+function playTone(freq = 440, type = "triangle", duration = 0.2, gainVal = 0.95, addHarmonic = true) {
   if (!soundEnabled || soundVolume <= 0) return;
   try {
     const ctx = getAudioContext();
-    if (!ctx) return;
+    if (!ctx || !masterGainNode) return;
+    
+    const now = ctx.currentTime;
+    
+    // Main Oscillator
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     
     osc.type = type;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    osc.frequency.setValueAtTime(freq, now);
     
-    const effectiveGain = Math.min(0.95, gainVal * soundVolume);
-    gain.gain.setValueAtTime(effectiveGain, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+    // High-impact envelope: rapid punchy attack, solid sustain, fast release
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(gainVal, now + 0.012);
+    gain.gain.setValueAtTime(gainVal, now + duration * 0.75);
+    gain.gain.linearRampToValueAtTime(0.001, now + duration);
     
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(masterGainNode);
     
-    osc.start();
-    osc.stop(ctx.currentTime + duration);
+    osc.start(now);
+    osc.stop(now + duration);
+
+    // Harmonic Layer for high acoustic presence
+    if (addHarmonic) {
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = "sine";
+      osc2.frequency.setValueAtTime(freq * 2, now);
+      gain2.gain.setValueAtTime(0.001, now);
+      gain2.gain.linearRampToValueAtTime(gainVal * 0.45, now + 0.012);
+      gain2.gain.setValueAtTime(gainVal * 0.45, now + duration * 0.7);
+      gain2.gain.linearRampToValueAtTime(0.001, now + duration);
+      
+      osc2.connect(gain2);
+      gain2.connect(masterGainNode);
+      
+      osc2.start(now);
+      osc2.stop(now + duration);
+    }
   } catch (e) {
     console.warn("Audio play error", e);
   }
 }
 
+function playBeep(freq = 440, type = "triangle", duration = 0.15, gainVal = 0.95) {
+  playTone(freq, type, duration, gainVal, true);
+}
+
 function playTransitionBeep() {
-  playBeep(520, "sine", 0.08, 0.28);
+  playTone(650, "sine", 0.1, 0.95, true);
 }
 
 function playStartChime() {
@@ -143,14 +202,14 @@ function playStartChime() {
     if (!ctx) return;
     [523.25, 659.25, 783.99].forEach((freq, idx) => {
       setTimeout(() => {
-        playBeep(freq, "triangle", 0.25, 0.38);
-      }, idx * 90);
+        playTone(freq, "triangle", 0.32, 0.95, true);
+      }, idx * 95);
     });
   } catch (e) {}
 }
 
 function playUrgentBeep() {
-  playBeep(880, "square", 0.1, 0.28);
+  playTone(950, "square", 0.12, 0.85, false);
 }
 
 function playTimesUpBuzzer() {
@@ -158,10 +217,10 @@ function playTimesUpBuzzer() {
   try {
     const ctx = getAudioContext();
     if (!ctx) return;
-    [300, 250, 200].forEach((freq, idx) => {
+    [360, 270, 180].forEach((freq, idx) => {
       setTimeout(() => {
-        playBeep(freq, "sawtooth", 0.35, 0.45);
-      }, idx * 130);
+        playTone(freq, "sawtooth", 0.38, 1.0, true);
+      }, idx * 120);
     });
   } catch (e) {}
 }
@@ -633,7 +692,7 @@ function playCelebrationChime() {
     if (!ctx) return;
     [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
       setTimeout(() => {
-        playBeep(freq, "triangle", 0.35, 0.4);
+        playTone(freq, "triangle", 0.38, 1.0, true);
       }, idx * 110);
     });
   } catch (e) {}
