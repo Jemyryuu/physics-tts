@@ -240,6 +240,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
 });
 
+const ANSWERS_PASSWORD = "FisikaHebat";
+
 function initModeNav() {
   const btnQuestions = document.getElementById("navBtnQuestions");
   const btnAnswers = document.getElementById("navBtnAnswers");
@@ -250,11 +252,82 @@ function initModeNav() {
   if (btnAnswers) {
     btnAnswers.addEventListener("click", () => {
       if (currentAppMode === "answers") return;
-      const confirmed = confirm("Peringatan: Anda akan membuka tab Kunci Jawaban.\n\nApakah Anda yakin ingin melihat kunci jawaban? (Pastikan layar tidak sedang dilihat oleh peserta/proyektor)");
-      if (confirmed) {
-        switchAppMode("answers");
-      }
+      openPasswordModal();
     });
+  }
+}
+
+function openPasswordModal() {
+  const backdrop = document.getElementById("passwordModalBackdrop");
+  const input = document.getElementById("passwordInput");
+  const errorMsg = document.getElementById("passwordErrorMsg");
+  const btnToggle = document.getElementById("btnTogglePasswordVisibility");
+  
+  if (errorMsg) errorMsg.style.display = "none";
+  if (input) {
+    input.value = "";
+    input.classList.remove("input-error");
+    input.type = "password";
+  }
+  if (btnToggle) {
+    btnToggle.innerHTML = `<svg class="icon eye-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+  }
+  
+  if (backdrop) {
+    backdrop.classList.add("active");
+    setTimeout(() => {
+      if (input) input.focus();
+    }, 60);
+  }
+}
+
+function closePasswordModal() {
+  const backdrop = document.getElementById("passwordModalBackdrop");
+  if (backdrop) {
+    backdrop.classList.remove("active");
+  }
+  const input = document.getElementById("passwordInput");
+  if (input) {
+    input.value = "";
+  }
+}
+
+function togglePasswordVisibility() {
+  const input = document.getElementById("passwordInput");
+  const btn = document.getElementById("btnTogglePasswordVisibility");
+  if (!input || !btn) return;
+
+  if (input.type === "password") {
+    input.type = "text";
+    btn.innerHTML = `<svg class="icon eye-off-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+  } else {
+    input.type = "password";
+    btn.innerHTML = `<svg class="icon eye-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+  }
+}
+
+function verifyPassword() {
+  const input = document.getElementById("passwordInput");
+  const errorMsg = document.getElementById("passwordErrorMsg");
+  if (!input) return;
+
+  const entered = input.value.trim();
+  if (entered === ANSWERS_PASSWORD) {
+    closePasswordModal();
+    switchAppMode("answers");
+    showToast("Kunci jawaban berhasil dibuka");
+  } else {
+    if (errorMsg) {
+      errorMsg.textContent = "Password salah! Silakan coba lagi.";
+      errorMsg.style.display = "block";
+    }
+    input.classList.add("input-error");
+    playBeep(220, "sawtooth", 0.2, 0.4);
+    setTimeout(() => {
+      input.classList.remove("input-error");
+    }, 400);
+    input.focus();
+    input.select();
   }
 }
 
@@ -958,14 +1031,47 @@ function setupEventListeners() {
 
   document.getElementById("btnFullscreen").addEventListener("click", toggleFullscreen);
 
+  // Password Modal Events
+  const btnCancelPassword = document.getElementById("btnCancelPassword");
+  if (btnCancelPassword) {
+    btnCancelPassword.addEventListener("click", closePasswordModal);
+  }
+
+  const passwordForm = document.getElementById("passwordForm");
+  if (passwordForm) {
+    passwordForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      verifyPassword();
+    });
+  }
+
+  const btnTogglePwd = document.getElementById("btnTogglePasswordVisibility");
+  if (btnTogglePwd) {
+    btnTogglePwd.addEventListener("click", togglePasswordVisibility);
+  }
+
+  const pwdBackdrop = document.getElementById("passwordModalBackdrop");
+  if (pwdBackdrop) {
+    pwdBackdrop.addEventListener("click", (e) => {
+      if (e.target === pwdBackdrop) {
+        closePasswordModal();
+      }
+    });
+  }
+
   document.addEventListener("keydown", handleKeydown);
 }
 
 function handleKeydown(e) {
+  const isPasswordOpen = document.getElementById("passwordModalBackdrop")?.classList.contains("active");
   const isModalOpen = document.getElementById("questionModalBackdrop").classList.contains("active");
   const isRoundCompleteOpen = document.getElementById("roundCompleteModalBackdrop").classList.contains("active");
 
   if (e.key === "Escape") {
+    if (isPasswordOpen) {
+      closePasswordModal();
+      return;
+    }
     if (isModalOpen) {
       closeModal();
       return;
@@ -974,6 +1080,11 @@ function handleKeydown(e) {
       closeRoundCompleteModal();
       return;
     }
+  }
+
+  // Jika sedang mengetik di input, jangan jalankan shortcut keyboard global
+  if (document.activeElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA")) {
+    return;
   }
 
   if (e.key === "m" || e.key === "M") {

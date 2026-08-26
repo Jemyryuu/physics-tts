@@ -238,6 +238,57 @@
     </div>
   </div>
 
+  <!-- MODAL PASSWORD KUNCI JAWABAN -->
+  <div class="modal-backdrop" id="passwordModalBackdrop" role="dialog" aria-modal="true">
+    <div class="password-modal" id="passwordModal">
+      <div class="password-modal-header">
+        <div class="password-modal-icon-wrapper">
+          <svg class="icon password-lock-icon" viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <h3 class="password-modal-title">Akses Kunci Jawaban</h3>
+        <p class="password-modal-desc">
+          Masukkan password untuk membuka dan melihat kunci jawaban TTS.
+        </p>
+      </div>
+
+      <form id="passwordForm" class="password-form" onsubmit="return false;">
+        <div class="password-input-wrapper">
+          <input 
+            type="password" 
+            id="passwordInput" 
+            class="password-input" 
+            placeholder="Masukkan kata sandi..." 
+            autocomplete="current-password"
+            spellcheck="false"
+          />
+          <button type="button" id="btnTogglePasswordVisibility" class="btn-toggle-pwd" title="Tampilkan / Sembunyikan Password">
+            <svg class="icon eye-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+        
+        <div id="passwordErrorMsg" class="password-error-msg" style="display: none;">
+          Password salah! Silakan coba lagi.
+        </div>
+
+        <div class="password-modal-actions">
+          <button type="button" id="btnCancelPassword" class="btn btn-lg">Batal</button>
+          <button type="submit" id="btnSubmitPassword" class="btn btn-primary btn-lg">
+            <span>Buka Kunci</span>
+            <svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- FIXED BOTTOM-LEFT CREDIT BADGE -->
   <div class="fixed-credit-badge" aria-label="Kredit Pembuat">
     <svg class="icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>

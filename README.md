@@ -9,7 +9,7 @@ Website interaktif dan minimalis untuk pemilihan soal kuis Teka-Teki Silang (TTS
   - **Ronde 2 (1 - 12):** 5 Mendatar & 7 Menurun
   - **Ronde 3 (1 - 12):** 6 Mendatar & 6 Menurun
   - **Soal Cadangan (1 - 14):** 7 Mendatar & 7 Menurun
-- **Tab Khusus Kunci Jawaban:** Halaman terpisah untuk melihat kunci jawaban secara lengkap, dengan opsi filter:
+- **Tab Khusus Kunci Jawaban (Dilindungi Password):** Halaman terpisah untuk melihat kunci jawaban secara lengkap yang dilindungi dengan password (`FisikaHebat`), dengan opsi filter:
   - `Semua Kunci Jawaban` (50 Soal)
   - `Ronde 1 (1 - 12)`
   - `Ronde 2 (1 - 12)`
