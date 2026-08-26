@@ -163,6 +163,50 @@
     </div>
   </div>
 
+  <!-- MODAL RONDE SELESAI -->
+  <div class="modal-backdrop" id="roundCompleteModalBackdrop" role="dialog" aria-modal="true">
+    <div class="round-complete-modal" id="roundCompleteModal">
+      <div class="round-complete-icon-wrapper">
+        <svg class="icon round-complete-icon" viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+          <path d="M4 22h16"></path>
+          <path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"></path>
+          <path d="M18 14.66V17c0 .55-.45 1-1 1h-2c-.55 0-1-.45-1-1v-2.34"></path>
+          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+        </svg>
+      </div>
+
+      <div class="round-complete-badge" id="roundCompleteBadge">RONDE 1 SELESAI</div>
+      <h2 class="round-complete-title" id="roundCompleteTitle">Selamat! Ronde 1 Selesai</h2>
+      <p class="round-complete-desc" id="roundCompleteDesc">
+        Anda telah menyelesaikan nomor 1–12. Siap melanjutkan ke ronde berikutnya?
+      </p>
+
+      <div class="round-complete-stats" id="roundCompleteStats">
+        <div class="stat-box">
+          <span class="stat-number" id="statRoundCompleted">12/12</span>
+          <span class="stat-label">Soal Ronde Ini</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="statTotalCompleted">12/50</span>
+          <span class="stat-label">Total Selesai</span>
+        </div>
+      </div>
+
+      <div class="round-complete-actions">
+        <button id="btnContinueNextRound" class="btn btn-primary btn-lg">
+          <span id="btnContinueNextRoundText">Lanjut ke Ronde 2 (13–24)</span>
+          <svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+        <button id="btnRoundCompleteBackToGrid" class="btn btn-lg">
+          <svg class="icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Kembali ke Daftar Soal</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- NOTIFIKASI TOAST -->
   <div id="toast" class="toast"></div>
 

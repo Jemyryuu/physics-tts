@@ -443,7 +443,13 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
       playTimesUpBuzzer();
       updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS");
 
-      if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
+      const q = QUESTIONS_DATA[currentQuestionIndex];
+      if (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50) {
+        showToast(`Waktu habis. ${q.roundName || ('Ronde ' + q.round)} selesai!`);
+        autoNextTimeout = setTimeout(() => {
+          showRoundCompleteScreen(q.round);
+        }, 1200);
+      } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
         showToast("Waktu habis. Beralih ke soal berikutnya...");
         autoNextTimeout = setTimeout(() => {
           openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
@@ -500,7 +506,13 @@ function skipQuestionTimer() {
   playTimesUpBuzzer();
   updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS");
 
-  if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
+  const q = QUESTIONS_DATA[currentQuestionIndex];
+  if (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50) {
+    showToast(`Timer soal dilewati. ${q.roundName || ('Ronde ' + q.round)} selesai!`);
+    autoNextTimeout = setTimeout(() => {
+      showRoundCompleteScreen(q.round);
+    }, 800);
+  } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
     showToast("Timer soal dilewati. Beralih ke soal berikutnya...");
     autoNextTimeout = setTimeout(() => {
       openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
@@ -544,6 +556,89 @@ function updateTimerUI(seconds, totalDuration, labelText) {
   }
 }
 
+// === SISTEM LAYAR RONDE SELESAI ===
+function showRoundCompleteScreen(roundNumber) {
+  closeModal();
+  
+  const roundConfig = ROUNDS_CONFIG.find(r => r.id === String(roundNumber));
+  const roundName = roundConfig ? roundConfig.label : `Ronde ${roundNumber}`;
+  const roundRange = roundConfig ? roundConfig.range : "";
+
+  const questionsInRound = QUESTIONS_DATA.filter(q => q.round === roundNumber);
+  const completedInRound = questionsInRound.filter(q => completedQuestions.has(q.number)).length;
+
+  document.getElementById("roundCompleteBadge").textContent = `${roundName.toUpperCase()} SELESAI`;
+  document.getElementById("statRoundCompleted").textContent = `${completedInRound}/${questionsInRound.length}`;
+  document.getElementById("statTotalCompleted").textContent = `${completedQuestions.size}/50`;
+
+  const btnContinue = document.getElementById("btnContinueNextRound");
+  const btnContinueText = document.getElementById("btnContinueNextRoundText");
+
+  if (roundNumber < 4) {
+    const nextRoundNumber = roundNumber + 1;
+    const nextRoundConfig = ROUNDS_CONFIG.find(r => r.id === String(nextRoundNumber));
+    const nextRoundName = nextRoundConfig ? nextRoundConfig.label : `Ronde ${nextRoundNumber}`;
+    const nextRoundRange = nextRoundConfig ? nextRoundConfig.range : "";
+    const nextFirstQuestionNumber = nextRoundNumber === 2 ? 13 : nextRoundNumber === 3 ? 25 : 37;
+
+    document.getElementById("roundCompleteTitle").textContent = `Selamat! ${roundName} Selesai`;
+    document.getElementById("roundCompleteDesc").textContent = `Seluruh nomor pada ${roundName} (${roundRange}) telah selesai. Siap melanjutkan ke ${nextRoundName}?`;
+    
+    btnContinueText.textContent = `Lanjut ke ${nextRoundName} (${nextRoundRange})`;
+    btnContinue.style.display = "inline-flex";
+
+    btnContinue.onclick = () => {
+      closeRoundCompleteModal();
+      if (currentFilter === String(roundNumber)) {
+        currentFilter = String(nextRoundNumber);
+        const tabs = document.querySelectorAll(".tab-btn");
+        tabs.forEach(tab => {
+          if (tab.dataset.roundId === String(nextRoundNumber)) {
+            tab.classList.add("active");
+          } else {
+            tab.classList.remove("active");
+          }
+        });
+        renderGrid();
+      }
+      openQuestionModal(nextFirstQuestionNumber);
+    };
+  } else {
+    document.getElementById("roundCompleteTitle").textContent = "Luar Biasa! Semua Ronde Selesai";
+    document.getElementById("roundCompleteDesc").textContent = "50 Soal TTS Fluida & Mekanika Fisika telah rampung diselesaikan.";
+    
+    btnContinueText.textContent = "Ulangi dari Ronde 1 (1–12)";
+    btnContinue.style.display = "inline-flex";
+
+    btnContinue.onclick = () => {
+      closeRoundCompleteModal();
+      openQuestionModal(1);
+    };
+  }
+
+  playCelebrationChime();
+  document.getElementById("roundCompleteModalBackdrop").classList.add("active");
+}
+
+function closeRoundCompleteModal() {
+  document.getElementById("roundCompleteModalBackdrop").classList.remove("active");
+  renderGrid();
+  updateProgressStats();
+}
+
+function playCelebrationChime() {
+  if (!soundEnabled || soundVolume <= 0) return;
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+      setTimeout(() => {
+        playBeep(freq, "triangle", 0.35, 0.4);
+      }, idx * 110);
+    });
+  } catch (e) {}
+}
+
 // === EVENT LISTENERS & SHORTCUTS ===
 function setupEventListeners() {
   document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
@@ -554,6 +649,13 @@ function setupEventListeners() {
       closeModal();
     }
   });
+
+  document.getElementById("roundCompleteModalBackdrop").addEventListener("click", (e) => {
+    if (e.target.id === "roundCompleteModalBackdrop") {
+      closeRoundCompleteModal();
+    }
+  });
+  document.getElementById("btnRoundCompleteBackToGrid").addEventListener("click", closeRoundCompleteModal);
 
   document.getElementById("btnPauseResume").addEventListener("click", pauseOrResumeTimer);
   document.getElementById("btnResetTimer").addEventListener("click", resetTimer);
@@ -571,7 +673,10 @@ function setupEventListeners() {
   });
 
   document.getElementById("btnNextQuestion").addEventListener("click", () => {
-    if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
+    const q = QUESTIONS_DATA[currentQuestionIndex];
+    if (q && (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50)) {
+      showRoundCompleteScreen(q.round);
+    } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
       openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
     }
   });
@@ -620,10 +725,17 @@ function setupEventListeners() {
 
 function handleKeydown(e) {
   const isModalOpen = document.getElementById("questionModalBackdrop").classList.contains("active");
+  const isRoundCompleteOpen = document.getElementById("roundCompleteModalBackdrop").classList.contains("active");
 
-  if (e.key === "Escape" && isModalOpen) {
-    closeModal();
-    return;
+  if (e.key === "Escape") {
+    if (isModalOpen) {
+      closeModal();
+      return;
+    }
+    if (isRoundCompleteOpen) {
+      closeRoundCompleteModal();
+      return;
+    }
   }
 
   if (e.key === "m" || e.key === "M") {
@@ -646,7 +758,10 @@ function handleKeydown(e) {
         openQuestionModal(QUESTIONS_DATA[currentQuestionIndex - 1].number);
       }
     } else if (e.key === "ArrowRight") {
-      if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
+      const q = QUESTIONS_DATA[currentQuestionIndex];
+      if (q && (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50)) {
+        showRoundCompleteScreen(q.round);
+      } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
         openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
       }
     }
