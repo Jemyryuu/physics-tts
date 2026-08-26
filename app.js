@@ -672,6 +672,12 @@ function startTransitionTimer() {
   stopTimer();
   timerState = "TRANSITION";
 
+  // Sembunyikan tombol "Tandai Selesai" saat fase persiapan
+  const btnCompleted = document.getElementById("btnToggleCompleted");
+  if (btnCompleted) {
+    btnCompleted.style.display = "none";
+  }
+
   const transitionView = document.getElementById("transitionStateView");
   const clueView = document.getElementById("clueTextView");
   const countdownText = document.getElementById("transitionCountdownText");
@@ -701,6 +707,12 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
   stopTimer();
   timerState = "QUESTION";
   timeRemaining = startFrom;
+
+  // Tampilkan kembali tombol "Tandai Selesai" saat soal mulai aktif
+  const btnCompleted = document.getElementById("btnToggleCompleted");
+  if (btnCompleted) {
+    btnCompleted.style.display = "inline-flex";
+  }
 
   const q = QUESTIONS_DATA[currentQuestionIndex];
   const transitionView = document.getElementById("transitionStateView");
