@@ -2,6 +2,7 @@
 let currentFilter = "all";
 let currentQuestionIndex = null;
 let completedQuestions = new Set();
+let isAnswerVisible = false;
 
 const TRANSITION_DURATION = 5;
 const QUESTION_DURATION = 45;
@@ -174,7 +175,15 @@ function loadCompletedQuestions() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      completedQuestions = new Set(JSON.parse(saved));
+      const rawList = JSON.parse(saved);
+      // Dukung migrasi dari ID numerik lama ke ID string unik
+      const converted = rawList.map(item => {
+        if (typeof item === "number" && item >= 1 && item <= QUESTIONS_DATA.length) {
+          return QUESTIONS_DATA[item - 1]?.id || item;
+        }
+        return item;
+      });
+      completedQuestions = new Set(converted);
     }
   } catch (e) {
     console.error(e);
@@ -252,9 +261,9 @@ function renderGrid() {
   if (currentFilter === "all") {
     roundsToDisplay = [
       { id: 1, name: "Ronde 1 (1 - 12)", range: [1, 12] },
-      { id: 2, name: "Ronde 2 (13 - 24)", range: [13, 24] },
-      { id: 3, name: "Ronde 3 (25 - 36)", range: [25, 36] },
-      { id: 4, name: "Sisa Nomor (37 - 50)", range: [37, 50] }
+      { id: 2, name: "Ronde 2 (1 - 12)", range: [1, 12] },
+      { id: 3, name: "Ronde 3 (1 - 12)", range: [1, 12] },
+      { id: 4, name: "Soal Cadangan (1 - 14)", range: [1, 14] }
     ];
   } else {
     const rId = parseInt(currentFilter, 10);
@@ -262,7 +271,7 @@ function renderGrid() {
     roundsToDisplay = [{
       id: rId,
       name: `${roundObj.label} (${roundObj.range})`,
-      range: rId === 1 ? [1, 12] : rId === 2 ? [13, 24] : rId === 3 ? [25, 36] : [37, 50]
+      range: rId === 4 ? [1, 14] : [1, 12]
     }];
   }
 
@@ -271,7 +280,7 @@ function renderGrid() {
     roundSection.className = "round-section";
 
     const questionsInRound = QUESTIONS_DATA.filter(q => q.round === round.id);
-    const completedInRound = questionsInRound.filter(q => completedQuestions.has(q.number)).length;
+    const completedInRound = questionsInRound.filter(q => completedQuestions.has(q.id)).length;
 
     roundSection.innerHTML = `
       <div class="round-heading">
@@ -285,14 +294,14 @@ function renderGrid() {
 
     const grid = roundSection.querySelector(`#grid-round-${round.id}`);
     questionsInRound.forEach(q => {
-      const isCompleted = completedQuestions.has(q.number);
+      const isCompleted = completedQuestions.has(q.id);
       const isMendatar = q.type === "mendatar";
 
       const card = document.createElement("div");
       card.className = `question-card type-${q.type} ${isCompleted ? "is-completed" : ""}`;
       card.setAttribute("role", "button");
       card.setAttribute("tabindex", "0");
-      card.setAttribute("aria-label", `Soal nomor ${q.number}, ${q.direction}`);
+      card.setAttribute("aria-label", `Soal nomor ${q.number} ${q.roundName}, ${q.direction}`);
 
       card.innerHTML = `
         ${isCompleted ? `<span class="card-completed-check">${SVG_ICONS.check}</span>` : ''}
@@ -304,13 +313,13 @@ function renderGrid() {
       `;
 
       card.addEventListener("click", () => {
-        openQuestionModal(q.number);
+        openQuestionModal(q.id);
       });
 
       card.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          openQuestionModal(q.number);
+          openQuestionModal(q.id);
         }
       });
 
@@ -322,13 +331,22 @@ function renderGrid() {
 function updateProgressStats() {
   const statsLabel = document.getElementById("progressStats");
   if (statsLabel) {
-    statsLabel.textContent = `${completedQuestions.size} / 50 Selesai`;
+    statsLabel.textContent = `${completedQuestions.size} / ${QUESTIONS_DATA.length} Selesai`;
   }
 }
 
-// === MODAL SOAL ===
-function openQuestionModal(questionNumber) {
-  const index = QUESTIONS_DATA.findIndex(q => q.number === questionNumber);
+// === MODAL SOAL & KUNCI JAWABAN ===
+function openQuestionModal(target) {
+  let index = -1;
+  if (typeof target === "number") {
+    index = QUESTIONS_DATA.findIndex(q => q.globalNumber === target);
+    if (index === -1 && target >= 0 && target < QUESTIONS_DATA.length) {
+      index = target;
+    }
+  } else {
+    index = QUESTIONS_DATA.findIndex(q => q.id === target);
+  }
+
   if (index === -1) return;
 
   currentQuestionIndex = index;
@@ -344,6 +362,14 @@ function openQuestionModal(questionNumber) {
     <span>${q.type === "mendatar" ? "MENDATAR" : "MENURUN"}</span>
   `;
 
+  // Set teks jawaban & sembunyikan secara default
+  const answerVal = document.getElementById("answerTextValue");
+  if (answerVal) {
+    answerVal.textContent = q.answer || "-";
+  }
+  isAnswerVisible = false;
+  updateAnswerUI();
+
   updateModalCompletedBtn();
   updateModalNavButtons();
 
@@ -353,19 +379,47 @@ function openQuestionModal(questionNumber) {
   startTransitionTimer();
 }
 
-function markQuestionCompleted(questionNumber) {
-  if (!completedQuestions.has(questionNumber)) {
-    completedQuestions.add(questionNumber);
+function toggleAnswerVisibility() {
+  isAnswerVisible = !isAnswerVisible;
+  updateAnswerUI();
+}
+
+function updateAnswerUI() {
+  const answerBox = document.getElementById("answerBoxView");
+  const btnText = document.getElementById("btnToggleAnswerText");
+  const btn = document.getElementById("btnToggleAnswer");
+  if (!answerBox) return;
+
+  if (isAnswerVisible) {
+    answerBox.classList.add("active");
+    if (btnText) btnText.textContent = "Sembunyikan";
+    if (btn) btn.classList.add("btn-primary");
+  } else {
+    answerBox.classList.remove("active");
+    if (btnText) btnText.textContent = "Kunci Jawaban";
+    if (btn) btn.classList.remove("btn-primary");
+  }
+}
+
+function markQuestionCompleted(questionId) {
+  if (!completedQuestions.has(questionId)) {
+    completedQuestions.add(questionId);
     saveCompletedQuestions();
     updateModalCompletedBtn();
     updateProgressStats();
   }
 }
 
+function isLastQuestionInRound(index) {
+  if (index < 0 || index >= QUESTIONS_DATA.length) return false;
+  if (index === QUESTIONS_DATA.length - 1) return true;
+  return QUESTIONS_DATA[index].round !== QUESTIONS_DATA[index + 1].round;
+}
+
 function updateModalCompletedBtn() {
   if (currentQuestionIndex === null || !QUESTIONS_DATA[currentQuestionIndex]) return;
   const q = QUESTIONS_DATA[currentQuestionIndex];
-  const isCompleted = completedQuestions.has(q.number);
+  const isCompleted = completedQuestions.has(q.id);
   const btn = document.getElementById("btnToggleCompleted");
 
   if (isCompleted) {
@@ -454,17 +508,17 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
       updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS");
 
       const q = QUESTIONS_DATA[currentQuestionIndex];
-      markQuestionCompleted(q.number);
+      markQuestionCompleted(q.id);
 
-      if (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50) {
-        showToast(`Waktu habis. Soal no. ${q.number} selesai! ${q.roundName || ('Ronde ' + q.round)} selesai!`);
+      if (isLastQuestionInRound(currentQuestionIndex)) {
+        showToast(`Waktu habis. Soal no. ${q.number} selesai! ${q.roundName} selesai!`);
         autoNextTimeout = setTimeout(() => {
           showRoundCompleteScreen(q.round);
         }, 1200);
       } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
         showToast(`Waktu habis. Soal no. ${q.number} selesai. Beralih ke soal berikutnya...`);
         autoNextTimeout = setTimeout(() => {
-          openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
+          openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].id);
         }, 1200);
       } else {
         showToast(`Waktu habis. Soal no. ${q.number} selesai. Seluruh soal telah selesai.`);
@@ -519,17 +573,17 @@ function skipQuestionTimer() {
   updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS");
 
   const q = QUESTIONS_DATA[currentQuestionIndex];
-  markQuestionCompleted(q.number);
+  markQuestionCompleted(q.id);
 
-  if (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50) {
-    showToast(`Timer soal dilewati. Soal no. ${q.number} selesai! ${q.roundName || ('Ronde ' + q.round)} selesai!`);
+  if (isLastQuestionInRound(currentQuestionIndex)) {
+    showToast(`Timer soal dilewati. Soal no. ${q.number} selesai! ${q.roundName} selesai!`);
     autoNextTimeout = setTimeout(() => {
       showRoundCompleteScreen(q.round);
     }, 800);
   } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
     showToast(`Timer soal dilewati. Soal no. ${q.number} selesai. Beralih ke soal berikutnya...`);
     autoNextTimeout = setTimeout(() => {
-      openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
+      openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].id);
     }, 800);
   } else {
     showToast(`Timer soal dilewati. Soal no. ${q.number} selesai. Seluruh soal telah selesai.`);
@@ -579,11 +633,11 @@ function showRoundCompleteScreen(roundNumber) {
   const roundRange = roundConfig ? roundConfig.range : "";
 
   const questionsInRound = QUESTIONS_DATA.filter(q => q.round === roundNumber);
-  const completedInRound = questionsInRound.filter(q => completedQuestions.has(q.number)).length;
+  const completedInRound = questionsInRound.filter(q => completedQuestions.has(q.id)).length;
 
   document.getElementById("roundCompleteBadge").textContent = `${roundName.toUpperCase()} SELESAI`;
   document.getElementById("statRoundCompleted").textContent = `${completedInRound}/${questionsInRound.length}`;
-  document.getElementById("statTotalCompleted").textContent = `${completedQuestions.size}/50`;
+  document.getElementById("statTotalCompleted").textContent = `${completedQuestions.size}/${QUESTIONS_DATA.length}`;
 
   const btnContinue = document.getElementById("btnContinueNextRound");
   const btnContinueText = document.getElementById("btnContinueNextRoundText");
@@ -593,7 +647,7 @@ function showRoundCompleteScreen(roundNumber) {
     const nextRoundConfig = ROUNDS_CONFIG.find(r => r.id === String(nextRoundNumber));
     const nextRoundName = nextRoundConfig ? nextRoundConfig.label : `Ronde ${nextRoundNumber}`;
     const nextRoundRange = nextRoundConfig ? nextRoundConfig.range : "";
-    const nextFirstQuestionNumber = nextRoundNumber === 2 ? 13 : nextRoundNumber === 3 ? 25 : 37;
+    const nextFirstQuestion = QUESTIONS_DATA.find(q => q.round === nextRoundNumber);
 
     document.getElementById("roundCompleteTitle").textContent = `Selamat! ${roundName} Selesai`;
     document.getElementById("roundCompleteDesc").textContent = `Seluruh nomor pada ${roundName} (${roundRange}) telah selesai. Siap melanjutkan ke ${nextRoundName}?`;
@@ -615,7 +669,9 @@ function showRoundCompleteScreen(roundNumber) {
         });
         renderGrid();
       }
-      openQuestionModal(nextFirstQuestionNumber);
+      if (nextFirstQuestion) {
+        openQuestionModal(nextFirstQuestion.id);
+      }
     };
   } else {
     document.getElementById("roundCompleteTitle").textContent = "Luar Biasa! Semua Ronde Selesai";
@@ -626,7 +682,7 @@ function showRoundCompleteScreen(roundNumber) {
 
     btnContinue.onclick = () => {
       closeRoundCompleteModal();
-      openQuestionModal(1);
+      openQuestionModal(QUESTIONS_DATA[0].id);
     };
   }
 
@@ -680,29 +736,34 @@ function setupEventListeners() {
     btnSkipQ.addEventListener("click", skipQuestionTimer);
   }
 
+  const btnToggleAns = document.getElementById("btnToggleAnswer");
+  if (btnToggleAns) {
+    btnToggleAns.addEventListener("click", toggleAnswerVisibility);
+  }
+
   document.getElementById("btnPrevQuestion").addEventListener("click", () => {
     if (currentQuestionIndex > 0) {
-      openQuestionModal(QUESTIONS_DATA[currentQuestionIndex - 1].number);
+      openQuestionModal(QUESTIONS_DATA[currentQuestionIndex - 1].id);
     }
   });
 
   document.getElementById("btnNextQuestion").addEventListener("click", () => {
     const q = QUESTIONS_DATA[currentQuestionIndex];
-    if (q && (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50)) {
+    if (q && isLastQuestionInRound(currentQuestionIndex)) {
       showRoundCompleteScreen(q.round);
     } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
-      openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
+      openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].id);
     }
   });
 
   document.getElementById("btnToggleCompleted").addEventListener("click", () => {
     const q = QUESTIONS_DATA[currentQuestionIndex];
-    if (completedQuestions.has(q.number)) {
-      completedQuestions.delete(q.number);
-      showToast(`Soal no. ${q.number} ditandai belum selesai`);
+    if (completedQuestions.has(q.id)) {
+      completedQuestions.delete(q.id);
+      showToast(`Soal no. ${q.number} (${q.roundName}) ditandai belum selesai`);
     } else {
-      completedQuestions.add(q.number);
-      showToast(`Soal no. ${q.number} ditandai selesai`);
+      completedQuestions.add(q.id);
+      showToast(`Soal no. ${q.number} (${q.roundName}) ditandai selesai`);
     }
     saveCompletedQuestions();
     updateModalCompletedBtn();
@@ -767,16 +828,18 @@ function handleKeydown(e) {
       skipTransition();
     } else if (e.key === "t" || e.key === "T" || e.key === "k" || e.key === "K") {
       skipQuestionTimer();
+    } else if (e.key === "j" || e.key === "J") {
+      toggleAnswerVisibility();
     } else if (e.key === "ArrowLeft") {
       if (currentQuestionIndex > 0) {
-        openQuestionModal(QUESTIONS_DATA[currentQuestionIndex - 1].number);
+        openQuestionModal(QUESTIONS_DATA[currentQuestionIndex - 1].id);
       }
     } else if (e.key === "ArrowRight") {
       const q = QUESTIONS_DATA[currentQuestionIndex];
-      if (q && (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50)) {
+      if (q && isLastQuestionInRound(currentQuestionIndex)) {
         showRoundCompleteScreen(q.round);
       } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
-        openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
+        openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].id);
       }
     }
   }

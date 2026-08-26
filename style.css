@@ -753,6 +753,46 @@ body {
   animation: revealQuestion 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.answer-box-view {
+  display: none;
+  margin-top: 1.25rem;
+  width: 100%;
+}
+
+.answer-box-view.active {
+  display: flex;
+  justify-content: center;
+  animation: revealQuestion 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.answer-box-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-strong);
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-xs);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.answer-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.answer-text {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--accent-mendatar);
+  letter-spacing: 0.04em;
+}
+
 @keyframes revealQuestion {
   from {
     opacity: 0;
