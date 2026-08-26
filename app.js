@@ -502,6 +502,9 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
       playTimesUpBuzzer();
       updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS");
 
+      // Otomatis tandai soal selesai saat waktu habis
+      markCurrentQuestionCompleted();
+
       const q = QUESTIONS_DATA[currentQuestionIndex];
       if (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50) {
         showToast(`Waktu habis. ${q.roundName || ('Ronde ' + q.round)} selesai!`);
@@ -509,7 +512,7 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
           showRoundCompleteScreen(q.round);
         }, 1200);
       } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
-        showToast("Waktu habis. Beralih ke soal berikutnya...");
+        showToast("Waktu habis. Soal ditandai selesai.");
         autoNextTimeout = setTimeout(() => {
           openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
         }, 1200);
@@ -518,6 +521,18 @@ function startQuestionTimer(startFrom = QUESTION_DURATION) {
       }
     }
   }, 1000);
+}
+
+function markCurrentQuestionCompleted() {
+  if (currentQuestionIndex !== null) {
+    const q = QUESTIONS_DATA[currentQuestionIndex];
+    if (q && !completedQuestions.has(q.number)) {
+      completedQuestions.add(q.number);
+      saveCompletedQuestions();
+      updateModalCompletedBtn();
+      updateProgressStats();
+    }
+  }
 }
 
 function pauseOrResumeTimer() {
@@ -565,14 +580,17 @@ function skipQuestionTimer() {
   playTimesUpBuzzer();
   updateTimerUI(0, QUESTION_DURATION, "WAKTU HABIS");
 
+  // Otomatis tandai soal selesai saat dilewati
+  markCurrentQuestionCompleted();
+
   const q = QUESTIONS_DATA[currentQuestionIndex];
   if (q.number === 12 || q.number === 24 || q.number === 36 || q.number === 50) {
-    showToast(`Timer soal dilewati. ${q.roundName || ('Ronde ' + q.round)} selesai!`);
+    showToast(`Timer dilewati. ${q.roundName || ('Ronde ' + q.round)} selesai!`);
     autoNextTimeout = setTimeout(() => {
       showRoundCompleteScreen(q.round);
     }, 800);
   } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
-    showToast("Timer soal dilewati. Beralih ke soal berikutnya...");
+    showToast("Soal dilewati dan ditandai selesai.");
     autoNextTimeout = setTimeout(() => {
       openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].number);
     }, 800);
