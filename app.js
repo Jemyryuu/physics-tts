@@ -579,7 +579,7 @@ function renderAnswersList() {
         <h2 class="round-title">${round.name}</h2>
         <span class="round-subtitle">${questionsInRound.length} Kunci Jawaban</span>
       </div>
-      <div class="answers-list-grid ${showAnswerQuestions ? '' : 'is-compact'}" id="answer-grid-${round.id}"></div>
+      <div class="${showAnswerQuestions ? 'answers-list-grid' : 'answers-list-rows'}" id="answer-grid-${round.id}"></div>
     `;
 
     container.appendChild(roundSection);
@@ -587,25 +587,42 @@ function renderAnswersList() {
     const grid = roundSection.querySelector(`#answer-grid-${round.id}`);
     questionsInRound.forEach(q => {
       const isMendatar = q.type === "mendatar";
-      const card = document.createElement("div");
-      card.className = `answer-card type-${q.type} ${showAnswerQuestions ? '' : 'is-compact'}`;
+      const item = document.createElement("div");
 
-      card.innerHTML = `
-        <div class="answer-card-header">
-          <span class="answer-card-number">Nomor ${q.number}</span>
-          <span class="card-badge badge-${q.type}">
-            ${isMendatar ? SVG_ICONS.mendatar : SVG_ICONS.menurun}
-            <span>${isMendatar ? 'Mendatar' : 'Menurun'}</span>
-          </span>
-        </div>
-        ${showAnswerQuestions ? `<div class="answer-card-clue">${q.text}</div>` : ''}
-        <div class="answer-card-solution">
-          <span class="solution-label">Kunci Jawaban</span>
-          <span class="solution-value">${q.answer}</span>
-        </div>
-      `;
+      if (showAnswerQuestions) {
+        // Tampilan kartu lengkap dengan soal
+        item.className = `answer-card type-${q.type}`;
+        item.innerHTML = `
+          <div class="answer-card-header">
+            <span class="answer-card-number">Nomor ${q.number}</span>
+            <span class="card-badge badge-${q.type}">
+              ${isMendatar ? SVG_ICONS.mendatar : SVG_ICONS.menurun}
+              <span>${isMendatar ? 'Mendatar' : 'Menurun'}</span>
+            </span>
+          </div>
+          <div class="answer-card-clue">${q.text}</div>
+          <div class="answer-card-solution">
+            <span class="solution-label">Kunci Jawaban</span>
+            <span class="solution-value">${q.answer}</span>
+          </div>
+        `;
+      } else {
+        // Tampilan list rapi hanya kunci jawaban
+        item.className = `answer-row-item type-${q.type}`;
+        item.title = `Soal: ${q.text}`;
+        item.innerHTML = `
+          <div class="answer-row-meta">
+            <span class="answer-row-num">Nomor ${q.number}</span>
+            <span class="card-badge badge-${q.type}">
+              ${isMendatar ? SVG_ICONS.mendatar : SVG_ICONS.menurun}
+              <span>${isMendatar ? 'Mendatar' : 'Menurun'}</span>
+            </span>
+          </div>
+          <div class="answer-row-value">${q.answer}</div>
+        `;
+      }
 
-      grid.appendChild(card);
+      grid.appendChild(item);
     });
   });
 

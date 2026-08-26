@@ -764,9 +764,61 @@ body {
   gap: 0.85rem;
 }
 
-.answers-list-grid.is-compact {
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+/* Tampilan List Kunci Jawaban Tanpa Soal */
+.answers-list-rows {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem 1rem;
+}
+
+.answer-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 1rem;
+  box-shadow: var(--shadow-xs);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 48px;
+}
+
+.answer-row-item:hover {
+  background: var(--bg-surface);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.answer-row-meta {
+  display: flex;
+  align-items: center;
   gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.answer-row-num {
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  min-width: 66px;
+}
+
+.answer-row-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--accent-mendatar);
+  text-align: right;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+.type-menurun .answer-row-value {
+  color: var(--accent-menurun);
 }
 
 .answer-card {
@@ -785,11 +837,6 @@ body {
   border-color: var(--border-strong);
   box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
-}
-
-.answer-card.is-compact {
-  padding: 0.85rem 1rem;
-  gap: 0.55rem;
 }
 
 .answer-card-header {
@@ -1597,10 +1644,34 @@ body {
     width: 100%;
     min-width: unset;
   }
+
+  .answers-list-rows {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
 }
 
 /* --- MOBILE STANDAR (<= 580px) --- */
 @media (max-width: 580px) {
+  .answers-list-rows {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .answer-row-item {
+    padding: 0.55rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .answer-row-num {
+    font-size: 0.85rem;
+    min-width: auto;
+  }
+
+  .answer-row-value {
+    font-size: 0.925rem;
+  }
+
   .answers-actions-wrap {
     flex-direction: column;
     align-items: stretch;
