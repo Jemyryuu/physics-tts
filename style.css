@@ -1072,40 +1072,6 @@ body {
   gap: 0.4rem;
 }
 
-.modal-credit-corner {
-  display: flex;
-  align-items: center;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-  padding-top: 0.45rem;
-  border-top: 1px dashed var(--border-subtle);
-  width: 100%;
-  text-align: left;
-}
-
-.modal-credit-corner strong {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.round-complete-credit {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-  margin-top: 1rem;
-  padding-top: 0.5rem;
-  border-top: 1px dashed var(--border-subtle);
-  width: 100%;
-  max-width: 340px;
-  text-align: center;
-}
-
-.round-complete-credit strong {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
 /* ==========================================================================
    MODAL RONDE SELESAI
    ========================================================================== */
@@ -1250,6 +1216,51 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
+/* ==========================================================================
+   BADGE KREDIT TETAP (FIXED BOTTOM-LEFT)
+   ========================================================================== */
+.fixed-credit-badge {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  left: calc(1.25rem + env(safe-area-inset-left, 0px));
+  z-index: 150;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: auto;
+}
+
+.fixed-credit-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  background: #ffffff;
+  color: var(--text-primary);
+}
+
+.fixed-credit-badge .icon {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.fixed-credit-badge strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
 .footer {
   border-top: 1px solid var(--border-subtle);
   padding: 1.25rem 1.5rem;
@@ -1261,28 +1272,9 @@ body {
   max-width: 1140px;
   margin: 0 auto;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 0.75rem;
-}
-
-.footer-credit {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  background: var(--bg-canvas);
-  padding: 0.4rem 0.85rem;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--border-subtle);
-  box-shadow: var(--shadow-xs);
-}
-
-.footer-credit strong {
-  color: var(--text-primary);
-  font-weight: 700;
+  text-align: center;
 }
 
 .footer-info {
@@ -1585,18 +1577,6 @@ body {
     font-size: 0.75rem;
   }
 
-  .modal-credit-corner {
-    font-size: 0.675rem;
-    padding-top: 0.25rem;
-    justify-content: flex-start;
-  }
-
-  .round-complete-credit {
-    font-size: 0.675rem;
-    margin-top: 0.75rem;
-    padding-top: 0.4rem;
-  }
-
   /* Modal Ronde Selesai di Mobile */
   .round-complete-modal {
     padding: 1.35rem 1rem;
@@ -1655,6 +1635,16 @@ body {
     font-size: 0.8rem;
   }
 
+  .fixed-credit-badge {
+    bottom: 0.75rem;
+    left: 0.75rem;
+    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    left: calc(0.75rem + env(safe-area-inset-left, 0px));
+    font-size: 0.75rem;
+    padding: 0.32rem 0.65rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  }
+
   .toast {
     bottom: 1.25rem;
     font-size: 0.75rem;
@@ -1663,17 +1653,11 @@ body {
 
   .footer {
     padding: 1.15rem 1rem;
+    padding-bottom: max(1.15rem, calc(2.8rem + env(safe-area-inset-bottom, 0px)));
   }
 
   .footer-container {
-    flex-direction: column;
     text-align: center;
-    gap: 0.45rem;
-  }
-
-  .footer-credit {
-    font-size: 0.775rem;
-    padding: 0.35rem 0.75rem;
   }
 
   .footer-info {

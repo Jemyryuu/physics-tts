@@ -248,7 +248,13 @@ function initModeNav() {
     btnQuestions.addEventListener("click", () => switchAppMode("questions"));
   }
   if (btnAnswers) {
-    btnAnswers.addEventListener("click", () => switchAppMode("answers"));
+    btnAnswers.addEventListener("click", () => {
+      if (currentAppMode === "answers") return;
+      const confirmed = confirm("Peringatan: Anda akan membuka tab Kunci Jawaban.\n\nApakah Anda yakin ingin melihat kunci jawaban? (Pastikan layar tidak sedang dilihat oleh peserta/proyektor)");
+      if (confirmed) {
+        switchAppMode("answers");
+      }
+    });
   }
 }
 
@@ -894,17 +900,37 @@ function setupEventListeners() {
   });
 
   document.getElementById("btnToggleCompleted").addEventListener("click", () => {
+    if (currentQuestionIndex === null || !QUESTIONS_DATA[currentQuestionIndex]) return;
     const q = QUESTIONS_DATA[currentQuestionIndex];
     if (completedQuestions.has(q.id)) {
       completedQuestions.delete(q.id);
       showToast(`Soal Nomor ${q.number} (${q.roundName}) ditandai belum selesai`);
+      saveCompletedQuestions();
+      updateModalCompletedBtn();
+      updateProgressStats();
     } else {
       completedQuestions.add(q.id);
-      showToast(`Soal Nomor ${q.number} (${q.roundName}) ditandai selesai`);
+      saveCompletedQuestions();
+      updateModalCompletedBtn();
+      updateProgressStats();
+
+      // Otomatis lanjut ke soal berikutnya atau layar ronde selesai
+      if (isLastQuestionInRound(currentQuestionIndex)) {
+        showToast(`Soal Nomor ${q.number} selesai! ${q.roundName} selesai!`);
+        stopTimer();
+        autoNextTimeout = setTimeout(() => {
+          showRoundCompleteScreen(q.round);
+        }, 500);
+      } else if (currentQuestionIndex < QUESTIONS_DATA.length - 1) {
+        showToast(`Soal Nomor ${q.number} selesai. Melanjutkan ke soal berikutnya...`);
+        stopTimer();
+        autoNextTimeout = setTimeout(() => {
+          openQuestionModal(QUESTIONS_DATA[currentQuestionIndex + 1].id);
+        }, 500);
+      } else {
+        showToast(`Soal Nomor ${q.number} selesai. Seluruh soal telah selesai.`);
+      }
     }
-    saveCompletedQuestions();
-    updateModalCompletedBtn();
-    updateProgressStats();
   });
 
   document.getElementById("btnResetAllProgress").addEventListener("click", () => {
